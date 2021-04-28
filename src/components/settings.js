@@ -45,11 +45,7 @@ export default class Settings extends Component {
     render() {
         return <div className = "container">
 
-            <NavBar 
-                profile = ''
-                makePlan = ''
-                settings = ' active'
-                expenseReport = ''/>
+            <NavBar settings = ' active' />
 
             <form onSubmit={this.handleSubmit} className = "form-floating" style={containerStyle}>
                 <div className = "input-group input-group-lg mb-3 form-floating">

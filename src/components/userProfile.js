@@ -227,12 +227,9 @@ export default class UserProfile extends React.Component {
     }
 
     render() {
-        return <div style={pageStyle} className = "container">
+        return <div className = "container">
             <NavBar 
-                profile = ' active'
-                makePlan = ''
-                settings = ''
-                expenseReport = ''/>
+                profile = ' active'/>
 
             <UserJumbotron 
                 userData={this.state} 

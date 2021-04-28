@@ -1,6 +1,7 @@
 // import logo from './logo.svg';
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap/dist/js/bootstrap.bundle.min.js'
 import LandingPage from './components/landingPage.js'
 import UserProfile from './components/userProfile.js'
 import Settings from './components/settings.js'
