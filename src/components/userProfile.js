@@ -1,5 +1,6 @@
 import NavBar from './nav.js'
 import React from 'react'
+import styled from 'styled-components'
 
 
 
@@ -11,6 +12,12 @@ const statusColors = {
     4: 'rgba(102, 27, 9,0.2)',
 }
 
+const progressBarColors = {
+    1: 'rgba(16, 77, 8,0.5)',
+    2: 'rgba(112, 185, 43,0.5)',
+    3: 'rgba(219, 146, 63,0.5)',
+    4: 'rgba(102, 27, 9,0.5)',
+}
 
 let userImgStyle = {
     height: 100,
@@ -33,6 +40,11 @@ let pageStyle = {
 
 
 //////////////////////// VIEWS \\\\\\\\\\\\\\\\\\\\\\\\
+const ProgressBarFiller = styled.div`
+    width: ${props => props.width}%;
+
+`
+
 function UserImg(props) {
     return <img src = {props.picture} style={userImgStyle} alt="person img"/>
 }
@@ -94,13 +106,24 @@ function UserJumbotron(props) {
     // alert(props.hasPlan)
 
     const toSaveToday = props.userData.hasPlan? props.userData.plan.amount/(props.userData.plan.duration * 30) : 0
+    const toSpendToday = props.userData.income/30-toSaveToday
+    const todayExpense = props.userData.todayExpense
+    const expensePercentage = (todayExpense*100)/toSpendToday
+
+    console.log(expensePercentage) //test...
+
+    // Creating style of progress bar filler
+    var progressBarStyle = {...props.style}
+    progressBarStyle.backgroundColor = progressBarColors[props.backgroundColorIndex]
+    progressBarStyle.height = 10
 
     return <div style={props.style}>
             <h1 className="display-4" >
                 <UserImg picture = {props.userData.picture}/>
                 {props.userData.userName}
             </h1>
-            <p className="lead">You have spent {props.userData.todayExpense} out of {props.userData.income/30-toSaveToday}</p>
+            <p className="lead">You have spent {todayExpense} out of {toSpendToday}</p>
+            <ProgressBarFiller style = {progressBarStyle} width = {expensePercentage}/>
         </div>
 }
 
@@ -118,7 +141,6 @@ function PlanView(props) {
             <p>You have no plans <a href = "#">Click Here</a> to Create one</p>
         </div>
 }
-
 
 export default class UserProfile extends React.Component {
 
@@ -157,15 +179,20 @@ export default class UserProfile extends React.Component {
 
         const everydayEx = this.state.income/30
         const todayEx = this.state.todayExpense
+        var backgroundColorIndex = '1'
         
         if(todayEx/everydayEx < 0.5) {
             dailyExpenseStatus.backgroundColor = statusColors['1']
+            backgroundColorIndex = '1'
         } else if (todayEx/everydayEx < 0.8) {
             dailyExpenseStatus.backgroundColor = statusColors['2']
+            backgroundColorIndex = '2'
         } else if(todayEx/everydayEx < 1) {
             dailyExpenseStatus.backgroundColor = statusColors['3']
+            backgroundColorIndex = '3'
         } else {
             dailyExpenseStatus.backgroundColor = statusColors['4']
+            backgroundColorIndex = '4'
         }
 
 
@@ -212,7 +239,8 @@ export default class UserProfile extends React.Component {
             planStyle: planStatus,
             availableAmountStyle: availableAmountStatus,
             salaryStyle: salaryStatus,
-            defaultsStyle: {...containerStyle}
+            defaultsStyle: {...containerStyle},
+            backgroundColorIndex,
         }
     }
 
@@ -232,6 +260,7 @@ export default class UserProfile extends React.Component {
                 profile = ' active'/>
 
             <UserJumbotron 
+                backgroundColorIndex = {this.getStatus().backgroundColorIndex}
                 userData={this.state} 
                 style = {this.getStatus().dailyExpenseStyle}/>
 
@@ -279,3 +308,9 @@ export default class UserProfile extends React.Component {
 // 	iv. expense input
 // 	v. recieved confirming input (in case of first of months of regular income)
 // 	vi. recieved income amount input (in case of non-regular income)
+
+
+// =========================== Upcoming Fixes to be Done ===========================
+// Minus Expense are not allowed
+// progress bars 100 % expense is weird
+// progress bar goes to more than 100% and less than 0
