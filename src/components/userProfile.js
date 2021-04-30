@@ -42,6 +42,7 @@ let pageStyle = {
 //////////////////////// VIEWS \\\\\\\\\\\\\\\\\\\\\\\\
 const ProgressBarFiller = styled.div`
     width: ${props => props.width}%;
+    transition: width .4s ease-in-out;
 
 `
 
@@ -54,7 +55,7 @@ class SingleInput extends React.Component {
     constructor(props) {
         super(props);
         
-        this.state = {value: ''};
+        this.state = {value: undefined};
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -68,7 +69,7 @@ class SingleInput extends React.Component {
     }
   
     handleChange(event) {
-      this.setState({value: event.target.value});
+        this.setState({value: event.target.value});
     }
   
     handleSubmit(event) {
@@ -88,6 +89,7 @@ class SingleInput extends React.Component {
                     aria-label="Recipient's username" 
                     aria-describedby="button-addon2"
                     type={this.props.inputType} 
+                    min={0}
                     value={this.state.value} 
                     onChange={this.handleChange} 
                     placeholder={this.props.inputLabel}/>
@@ -108,14 +110,17 @@ function UserJumbotron(props) {
     const toSaveToday = props.userData.hasPlan? props.userData.plan.amount/(props.userData.plan.duration * 30) : 0
     const toSpendToday = props.userData.income/30-toSaveToday
     const todayExpense = props.userData.todayExpense
-    const expensePercentage = (todayExpense*100)/toSpendToday
-
-    console.log(expensePercentage) //test...
+    const expensePercentage = () => {
+        let percentage = (todayExpense*95)/toSpendToday
+        percentage = percentage > 100 ? 100 : percentage
+        percentage = percentage < 0 ? 0 : percentage
+        return percentage
+    }
 
     // Creating style of progress bar filler
     var progressBarStyle = {...props.style}
     progressBarStyle.backgroundColor = progressBarColors[props.backgroundColorIndex]
-    progressBarStyle.height = 10
+    progressBarStyle.height = 5
 
     return <div style={props.style}>
             <h1 className="display-4" >
@@ -246,11 +251,12 @@ export default class UserProfile extends React.Component {
 
     onSpend(amount) {
 
-        const prevEx = this.state.todayExpense
+        const prevEx = this.state.todayExpense || 0
+        const newExpense = amount === '' ? 0 : parseInt(amount)
 
         this.setState({
-            todayExpense: prevEx + parseInt(amount),
-            availableAmount: this.state.availableAmount - parseInt(amount),
+            todayExpense: prevEx + parseInt(newExpense),
+            availableAmount: this.state.availableAmount - parseInt(newExpense),
         })
     }
 
@@ -299,18 +305,3 @@ export default class UserProfile extends React.Component {
 }
 
 
-
-// DONE
-// 7. Profile Page
-// 	i. Name 
-// 	ii. picture
-// 	iii. status of plan (if exist)/none plan
-// 	iv. expense input
-// 	v. recieved confirming input (in case of first of months of regular income)
-// 	vi. recieved income amount input (in case of non-regular income)
-
-
-// =========================== Upcoming Fixes to be Done ===========================
-// Minus Expense are not allowed
-// progress bars 100 % expense is weird
-// progress bar goes to more than 100% and less than 0

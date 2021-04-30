@@ -111,6 +111,7 @@ export default class Settings extends Component {
                     <input 
                         className="form-control" 
                         id="floatingInputValue"
+                        min={0}
                         type='number'
                         name= 'incomeAmount'
                         value={this.state.incomeAmount}
@@ -157,108 +158,3 @@ export default class Settings extends Component {
         </div>
     }
 }
-
-
-
-// <div className = "container">
-//             <NavBar 
-//                 profile = ''
-//                 makePlan = ''
-//                 settings = ' active'
-//                 expenseReport = ''/>
-
-//             <form onSubmit={this.handleSubmit} className = "form-floating">
-//                 <div className = "input-group input-group-lg mb-3 form-floating">
-//                     <input 
-//                         className="form-control" 
-//                         id="floatingInputValue"
-//                         type='text'
-//                         name= 'name'
-//                         value={this.state.name}
-//                         onChange = {(event) => this.handleInputChange(event)} />
-                    
-//                     <label 
-//                         htmlFor="floatingInputValue" >
-//                         Name:  </label>
-
-//                 </div>
-//                 <div className = "input-group input-group-lg mb-3 form-floating">
-//                     <input 
-//                         className="form-control" 
-//                         id="floatingInputValue"
-//                         type='text'
-//                         name= 'username'
-//                         value={this.state.username}
-//                         onChange = {(event) => this.handleInputChange(event)} />
-                    
-//                     <label 
-//                         htmlFor="floatingInputValue" >
-//                         Username:  </label>
-
-//                 </div>
-//                 <div className = "input-group input-group-lg mb-3 form-floating">
-//                     <input 
-//                         className="form-control" 
-//                         id="floatingInputValue"
-//                         type='password'
-//                         name= 'password'
-//                         value={this.state.password}
-//                         onChange = {(event) => this.handleInputChange(event)} />
-                    
-//                     <label 
-//                         htmlFor="floatingInputValue" >
-//                         Password:  </label>
-
-//                 </div>
-//                 <div className = "input-group input-group-lg mb-3 form-floating">
-//                     <input 
-//                         className="form-control" 
-//                         id="floatingInputValue"
-//                         type='email'
-//                         name= 'email'
-//                         value={this.state.email}
-//                         onChange = {(event) => this.handleInputChange(event)} />
-                    
-//                     <label 
-//                         htmlFor="floatingInputValue" >
-//                         Name:  </label>
-
-//                 </div>
-//                 <div className = "input-group input-group-lg mb-3 form-floating">
-//                     <input 
-//                         className="form-control" 
-//                         id="floatingInputValue"
-//                         type='number'
-//                         name= 'incomeAmount'
-//                         value={this.state.incomeAmount}
-//                         onChange = {(event) => this.handleInputChange(event)} />
-                    
-//                     <label 
-//                         htmlFor="floatingInputValue" >
-//                         Name:  </label>
-
-//                 </div>
-//                 <div className="form-check">
-//                     <input 
-//                             name = "isIncomeRegular"
-//                             type = 'checkbox'
-//                             onChange = {(event) => this.handleInputChange(event)}
-//                             value = {this.state.isIncomeRegular} 
-//                             className="form-check-input"
-//                             id="flexCheckDefault"/>
-//                     <label className="form-check-label" htmlFor="flexCheckDefault" >
-//                         Regular Income
-//                     </label>
-//                 </div>
-
-//             </form>
-//         </div>
-
-
-// 4. Settings Page
-// 	i. name
-// 	ii. username
-// 	iii. password
-// 	iv. email
-// 	v. income type
-// 	vi. income amount (...)
