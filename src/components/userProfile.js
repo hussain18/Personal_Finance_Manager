@@ -1,23 +1,14 @@
 import NavBar from './nav.js'
 import React from 'react'
 import styled from 'styled-components'
+import {bgColors, bgColorsMidOp} from './styles/backgroundColors.js'
 
 
 
 //////////////////////// STYLES \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ 
-const statusColors = {
-    1: 'rgba(16, 77, 8,0.2)',
-    2: 'rgba(112, 185, 43,0.2)',
-    3: 'rgba(219, 146, 63,0.2)',
-    4: 'rgba(102, 27, 9,0.2)',
-}
+const statusColors = {...bgColors}
 
-const progressBarColors = {
-    1: 'rgba(16, 77, 8,0.5)',
-    2: 'rgba(112, 185, 43,0.5)',
-    3: 'rgba(219, 146, 63,0.5)',
-    4: 'rgba(102, 27, 9,0.5)',
-}
+const progressBarColors = {...bgColorsMidOp}
 
 let userImgStyle = {
     height: 100,
@@ -25,24 +16,11 @@ let userImgStyle = {
     borderRadius: 90,
 }
 
-let containerStyle = {
-    backgroundColor: 'rgba(0,0,0,0.099999',
-    padding: 17,
-    borderRadius: 30,
-    margin: 10,
-    marginLeft: 20,
-    marginRight: 20,
-}
-
-let pageStyle = {
-    paddingTop: 20,
-}
-
-
 //////////////////////// VIEWS \\\\\\\\\\\\\\\\\\\\\\\\
 const ProgressBarFiller = styled.div`
     width: ${props => props.width}%;
-    transition: width .4s ease-in-out;
+    padding: 2%;
+    border-radius: 15px;
 
 `
 
@@ -81,8 +59,15 @@ class SingleInput extends React.Component {
     }
   
     render() {
+
+        const componentStyle = {
+            backgroundColor: statusColors[this.props.style]
+            //...
+        }
+
       return (
-        <form onSubmit={this.handleSubmit} style={this.props.style}>
+        <form onSubmit={this.handleSubmit} style={componentStyle} 
+            className='component-container container-hovered' >
             <div className = 'input-group '>
                 <input 
                     className='form-control'
@@ -105,8 +90,6 @@ class SingleInput extends React.Component {
 }
 
 function UserJumbotron(props) {
-    // alert(props.hasPlan)
-
     const toSaveToday = props.userData.hasPlan? props.userData.plan.amount/(props.userData.plan.duration * 30) : 0
     const toSpendToday = props.userData.income/30-toSaveToday
     const todayExpense = props.userData.todayExpense
@@ -118,31 +101,44 @@ function UserJumbotron(props) {
     }
 
     // Creating style of progress bar filler
-    var progressBarStyle = {...props.style}
-    progressBarStyle.backgroundColor = progressBarColors[props.backgroundColorIndex]
-    progressBarStyle.height = 5
+    var componentStyle = {
+        backgroundColor: statusColors[props.style]
+    }
 
-    return <div style={props.style}>
+    var progressBarStyle = {
+        backgroundColor: progressBarColors[props.style]
+    }
+
+    return <div style={componentStyle} className="component-container container-hovered" >
             <h1 className="display-4" >
                 <UserImg picture = {props.userData.picture}/>
                 {props.userData.userName}
             </h1>
             <p className="lead">You have spent {todayExpense} out of {toSpendToday}</p>
-            <ProgressBarFiller style = {progressBarStyle} width = {expensePercentage}/>
+            <ProgressBarFiller 
+                style = {progressBarStyle} 
+                width = {expensePercentage()} 
+                className='component-container'/>
         </div>
 }
 
 function PlanView(props) {
     const toSaveToday = props.hasPlan? props.plan.amount/(props.plan.duration * 30) : 0
     const todaySaving = props.income/30 - props.todayEx
+
+    var componentStyle = {
+        backgroundColor: statusColors[props.style]
+        // Can add more styles...
+    }
+
     return  props.hasPlan ? 
-        <div style={props.style}>
+        <div style={componentStyle} className = 'component-container container-hovered'>
             <p>Your plan is to save {props.plan.amount} in {props.plan.duration} months</p>
             <p>Today you have saved: {todaySaving}</p>
             <p>Target saving for today: {toSaveToday}</p>
         </div> :
 
-        <div style={containerStyle}>
+        <div style={componentStyle} className = 'component-container container-hovered'>
             <p>You have no plans <a href = "#">Click Here</a> to Create one</p>
         </div>
 }
@@ -178,65 +174,38 @@ export default class UserProfile extends React.Component {
     getStatus() {
         
         // Getting daily Expense Status
-        let dailyExpenseStatus = {
-            ...containerStyle
-        }
+        let dailyExpenseStatus = '1'
 
         const everydayEx = this.state.income/30
         const todayEx = this.state.todayExpense
-        var backgroundColorIndex = '1'
+        const expenseRate = todayEx/everydayEx
         
-        if(todayEx/everydayEx < 0.5) {
-            dailyExpenseStatus.backgroundColor = statusColors['1']
-            backgroundColorIndex = '1'
-        } else if (todayEx/everydayEx < 0.8) {
-            dailyExpenseStatus.backgroundColor = statusColors['2']
-            backgroundColorIndex = '2'
-        } else if(todayEx/everydayEx < 1) {
-            dailyExpenseStatus.backgroundColor = statusColors['3']
-            backgroundColorIndex = '3'
-        } else {
-            dailyExpenseStatus.backgroundColor = statusColors['4']
-            backgroundColorIndex = '4'
-        }
+        if(expenseRate > 1) dailyExpenseStatus = '4';
+        else if(expenseRate > 0.66) dailyExpenseStatus = '3';
+        else if(expenseRate > 0.33) dailyExpenseStatus = '2';
 
 
         // Getting Plan Status
-        let planStatus = {
-            ...containerStyle
-        }
+        let planStatus = '1'
         const toSaveToday = this.state.hasPlan? this.state.plan.amount/(this.state.plan.duration * 30) : 0
         const todaySaving = everydayEx - todayEx                                                                
-        if((todaySaving - toSaveToday) > 0) {
-            planStatus.backgroundColor = statusColors['1']
-        } else if ((todaySaving - toSaveToday) === 0) {
-            planStatus.backgroundColor = statusColors['2']
-        } else {
-            planStatus.backgroundColor = statusColors['4']
-        }
+        if(todaySaving < 0) planStatus = '4';
+        else if (todaySaving === 0) planStatus = '2';
 
         // Getting available amount status
-        let availableAmountStatus = {...containerStyle}
+        let availableAmountStatus = '1'
         const availableAmount = this.state.availableAmount
 
-        if (availableAmount > 1000) {
-            availableAmountStatus.backgroundColor = statusColors['1']
-        } else if (availableAmount > 500){
-            availableAmountStatus.backgroundColor = statusColors['2']
-        } else if (availableAmount > 10) {
-            availableAmountStatus.backgroundColor = statusColors['3']
-        } else {
-            availableAmountStatus.backgroundColor = statusColors['4']
-        }
-
+        if (availableAmount < 50) availableAmountStatus = '4'
+        else if (availableAmount < 500) availableAmountStatus = '3'
+        else if (availableAmount < 1000) availableAmountStatus = '2'
+        
         // Salary Receiving Status
-        let salaryStatus = {...containerStyle}
+        let salaryStatus = '2'
         if(this.state.isIncomeRegular) {
-            if (this.state.isNewMonth) {
-                salaryStatus.backgroundColor = statusColors['3']
-            } else {
-                salaryStatus.backgroundColor = statusColors['1']
-            }
+            salaryStatus = '1'
+            if (this.state.isNewMonth) 
+                salaryStatus = '3'; 
         } 
 
         return {
@@ -244,8 +213,7 @@ export default class UserProfile extends React.Component {
             planStyle: planStatus,
             availableAmountStyle: availableAmountStatus,
             salaryStyle: salaryStatus,
-            defaultsStyle: {...containerStyle},
-            backgroundColorIndex,
+            defaultsStyle: '1',
         }
     }
 
@@ -261,21 +229,25 @@ export default class UserProfile extends React.Component {
     }
 
     render() {
+        const status = this.getStatus()
+
         return <div className = "container">
             <NavBar 
                 profile = ' active'/>
 
             <UserJumbotron 
-                backgroundColorIndex = {this.getStatus().backgroundColorIndex}
+                backgroundColorIndex = {status.backgroundColorIndex}
                 userData={this.state} 
-                style = {this.getStatus().dailyExpenseStyle}/>
+                style = {status.dailyExpenseStyle}/>
 
             <p 
-                style = {this.getStatus().availableAmountStyle}> 
+                style = {{backgroundColor: statusColors[status.availableAmountStyle]}}
+                className = 'component-container container-hovered'
+                > 
                 You have {this.state.availableAmount} Money</p>
 
             <SingleInput 
-                style = {this.getStatus().defaultsStyle}
+                style = {status.defaultsStyle}
                 onSubmit = {(amount) => this.onSpend(amount)} 
                 inputType = 'number'
                 inputLabel = 'Your Expense Here'
@@ -285,15 +257,15 @@ export default class UserProfile extends React.Component {
             
             {this.state.isNewMonth ?
             <SingleInput 
-                style = {this.getStatus().salaryStyle}
+                style = {status.salaryStyle}
                 onSubmit = {(salary) => this.onSalaryReceiving(salary)}
                 inputType = 'number'
                 inputSubmitLabel = 'Recieved My Salary'
                 defaultValue = {this.state.isIncomeRegular ? this.state.income : ''} /> :
-                <p style={this.getStatus().salaryStyle}>You have got your Salary</p> }
+                <p style={status.salaryStyle}>You have got your Salary</p> }
 
             <PlanView 
-                style = {this.getStatus().planStyle}
+                style = {status.planStyle}
                 hasPlan = {this.state.hasPlan}
                 plan = {this.state.plan}
                 income = {this.state.income}

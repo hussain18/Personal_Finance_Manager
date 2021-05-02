@@ -1,15 +1,6 @@
 import React, { Component} from 'react'
 import NavBar from './nav.js'
 
-const containerStyle = {
-    backgroundColor: 'rgba(16, 77, 8,0.2)',
-    padding: 30,
-    borderRadius: 30,
-    margin: 10,
-    marginLeft: 20,
-    marginRight: 20,
-}
-
 export default class Settings extends Component {
     constructor(props) {
         super(props)
@@ -47,7 +38,7 @@ export default class Settings extends Component {
 
             <NavBar settings = ' active' />
 
-            <form onSubmit={this.handleSubmit} className = "form-floating" style={containerStyle}>
+            <form onSubmit={this.handleSubmit} className = "form-floating form-style component-container">
                 <div className = "input-group input-group-lg mb-3 form-floating">
                     <input 
                         className="form-control" 

@@ -1,3 +1,35 @@
 ul{
     padding: .5rem im !important;
 }
+
+.component-container{
+    background-color: rgba(16, 77, 8,0.2);
+    padding: 3%;
+    border-radius: 30px;
+    margin-bottom: 7px;
+    transition-property: all;
+    transition-duration: 200ms;
+    transition-timing-function:ease-in-out;
+}
+
+.collapseButtonStyle {
+    padding-top: 1;
+    padding-bottom: 1;
+    margin-right: 0%;
+    margin-left:0%;
+    margin-bottom: 0;
+    border-bottom-width: 0;
+    border-left-width: 0;
+    border-right-width: 0px;
+    border-radius: 0;
+}
+
+.container-hovered:hover {
+    transform: scale(1.025555);
+    box-shadow: 3px 3px 5px gray;
+    
+}
+
+.form-style {
+    padding: 5%;
+}

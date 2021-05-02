@@ -1,22 +1,8 @@
 import React, { Component } from 'react';
 import NavBar from './nav.js'
+import {bgColors, bgColorsFullOp} from './styles/backgroundColors.js'
 
 ///////////////////// STYLINGS \\\\\\\\\\\\\\\\\\\\\
-const containerStyle = {
-    backgroundColor: 'rgba(16, 77, 8,0.2)',
-    padding: 10,
-    borderRadius: 30,
-    margin: 10,
-}
-
-const titleStyle = {
-    padding: 10,
-    borderRadius: 30,
-    margin: 10,
-    marginTop: 13,
-    fontWeight: 'bold',
-}
-
 const ulStyle = {
     padding: 0,
     marginRight: 20,
@@ -34,19 +20,9 @@ const collapseButtonStyle = {
     borderRadius: 0,
 }
 
-const statusExpandedColors = {
-    1: 'rgba(16, 77, 8,0.2)',
-    2: 'rgba(112, 185, 43,0.2)',
-    3: 'rgba(219, 146, 63,0.2)',
-    4: 'rgba(102, 27, 9,0.2)',
-}
+const statusExpandedColors = {...bgColors}
 
-const statusColors = {
-    1: 'rgba(16, 77, 8,0.7)',
-    2: 'rgba(112, 185, 43, 0.7)',
-    3: 'rgba(219, 146, 63, 0.7)',
-    4: 'rgba(245, 61, 14, 0.7)',
-}
+const statusColors = {...bgColorsFullOp}
 
 ///////////////////// DATA COMING FROM DATABASE \\\\\\\\\\\\\\\\\\\\\
 const days = [
@@ -159,23 +135,31 @@ const years = [
 ]
 
 ////////////////////// UTILITY FUNCTIONS \\\\\\\\\\\\\\\\\\\\\\\\\
-function getStatusColor(expectedExpense, expense, isExpanded) {
-    if (!expectedExpense || !expense) return;
+function getStatusColor(expectedExpense, expense) {
+    if (!expectedExpense || !expense) return '1';
 
-    let colors = isExpanded ? statusExpandedColors : statusColors
-
-    if(expense/expectedExpense < 0.5) return colors['1'];
-    if(expense/expectedExpense < 0.95) return colors['2'];
-    if(expense/expectedExpense < 1) return colors['3'];
-    return colors['4'];
+    if(expense/expectedExpense < 0.5) return '1';
+    if(expense/expectedExpense < 0.95) return '2';
+    if(expense/expectedExpense < 1) return '3';
+    
+    return '4';
 }
 
 function getStatusStyle(expectedExpense, expense, isExpanded) {
-    let elementStyle = {...containerStyle}
-    const statusColor = getStatusColor(expectedExpense, expense, isExpanded)
+    const colorIndex = getStatusColor(expectedExpense, expense)
+    var style = {
+        paddingRight: 40,
+        paddingLeft: 40,
+        paddingTop: 10,
+        paddingBottom: 10,
+        marginBottom: 5,
+        backgroundColor: statusExpandedColors[colorIndex],
+        //...
+    }
 
-    elementStyle.backgroundColor = statusColor
-    return elementStyle;
+    if(!isExpanded) style.backgroundColor = statusColors[colorIndex]
+
+    return style
 }
 
 
@@ -246,7 +230,7 @@ class DaysView extends Component {
 
         return this.state.expanded ?
             <div 
-                className = "container" 
+                className = "component-container container-hovered" 
                 style ={style}
                 onClick = {() => this.expandToggling()} >
                 
@@ -254,7 +238,7 @@ class DaysView extends Component {
 
             </div> :
             <div 
-                className = "container" 
+                className = "component-container container-hovered" 
                 style ={style}
                 onClick = {() => this.expandToggling()} >
                 <CompactView name = {name}
@@ -294,7 +278,7 @@ class MonthsView extends Component {
 
         return this.state.expanded ?
             <div 
-                className = "container" 
+                className = "component-container" 
                 style ={styleExpanded} >
 
                 <Title 
@@ -312,7 +296,7 @@ class MonthsView extends Component {
 
             </div> :
             <div 
-                className = "container" 
+                className = "component-container container-hovered" 
                 style ={style}
                 onClick = {() => this.expandToggling()} >
                 <CompactView name={name}
@@ -351,7 +335,7 @@ class YearsView extends Component {
 
         return this.state.expanded ?
             <div 
-                className = "container" 
+                className = "component-container" 
                 style ={styleExpanded} >
                 
                 <Title 
@@ -369,7 +353,7 @@ class YearsView extends Component {
 
             </div> :
             <div 
-                className = "container" 
+                className = "component-container container-hovered" 
                 style ={styleExpanded}
                 onClick = {() => this.expandToggling()} >
 
@@ -405,9 +389,6 @@ class ExpenseReport extends Component {
         return (
             <div className = "container">
                 <NavBar 
-                    profile = ''
-                    makePlan = ''
-                    settings = ''
                     expenseReport = ' active'/>
 
                 <ul type="none" style = {ulStyle}>

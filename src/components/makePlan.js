@@ -46,13 +46,6 @@ class MakePlan extends Component {
         });
     }
 
-    // clear() {
-    //     this.setState({
-    //         amount: null,
-    //         duration: null,
-    //     })
-    // }
-
     handleSubmit(event) {
         event.preventDefault()
         
