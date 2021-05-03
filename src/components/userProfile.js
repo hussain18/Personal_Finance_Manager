@@ -2,6 +2,7 @@ import NavBar from './nav.js'
 import React from 'react'
 import styled from 'styled-components'
 import {bgColors, bgColorsMidOp} from './styles/backgroundColors.js'
+import ProgressBar from './styles/templates.js'
 
 
 
@@ -105,9 +106,8 @@ function UserJumbotron(props) {
         backgroundColor: statusColors[props.style]
     }
 
-    var progressBarStyle = {
-        backgroundColor: progressBarColors[props.style]
-    }
+    var progressBarBackground = progressBarColors[props.style]
+    
 
     return <div style={componentStyle} className="component-container container-hovered" >
             <h1 className="display-4" >
@@ -115,10 +115,10 @@ function UserJumbotron(props) {
                 {props.userData.userName}
             </h1>
             <p className="lead">You have spent {todayExpense} out of {toSpendToday}</p>
-            <ProgressBarFiller 
-                style = {progressBarStyle} 
-                width = {expensePercentage()} 
-                className='component-container'/>
+            
+            <ProgressBar
+                background = {progressBarBackground}
+                width = {expensePercentage()} />
         </div>
 }
 
@@ -262,7 +262,10 @@ export default class UserProfile extends React.Component {
                 inputType = 'number'
                 inputSubmitLabel = 'Recieved My Salary'
                 defaultValue = {this.state.isIncomeRegular ? this.state.income : ''} /> :
-                <p style={status.salaryStyle}>You have got your Salary</p> }
+                <p 
+                    style={{backgroundColor: statusColors[status.salaryStyle]}}
+                    className = 'component-container'
+                    >You have got your Salary</p> }
 
             <PlanView 
                 style = {status.planStyle}
