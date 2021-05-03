@@ -165,6 +165,23 @@ function getStatusStyle(expectedExpense, expense, isExpanded) {
 
 ///////////////////// VIEWS OF EACH REPORT ELEMENT \\\\\\\\\\\\\\\\\\\\\
 
+function ListTitle(props) {
+    return <div className="component-container container-hovered fs-4"
+        style={{
+            backgroundColor: 'gray',
+            fontWeight: 'bold',
+            paddingTop: 15,
+            paddingBottom: 15,
+        }} >
+        
+        <CompactView 
+            name = {props.name}
+            savings = 'Savings'
+            expense = 'Expense' />
+
+    </div>
+}
+
 function Title(props) {
 
     return <h1 style = {{
@@ -286,6 +303,9 @@ class MonthsView extends Component {
                     fontSize = {25} />
                 
                 <ul type = 'none' style = {ulStyle}>
+
+                    <ListTitle name = 'Day' />
+
                     {this.state.data.days.map((day) => 
                     <DaysView
                         data = {day} /> ) }
@@ -343,6 +363,8 @@ class YearsView extends Component {
                     fontSize = {25} />
                 
                 <ul type = 'none' style = {ulStyle}>
+
+                    <ListTitle name='Month' />
 
                     {this.state.data.months.map((month) => 
                     <MonthsView

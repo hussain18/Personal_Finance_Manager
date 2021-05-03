@@ -264,7 +264,7 @@ export default class UserProfile extends React.Component {
                 defaultValue = {this.state.isIncomeRegular ? this.state.income : ''} /> :
                 <p 
                     style={{backgroundColor: statusColors[status.salaryStyle]}}
-                    className = 'component-container'
+                    className = 'component-container container-hovered'
                     >You have got your Salary</p> }
 
             <PlanView 
