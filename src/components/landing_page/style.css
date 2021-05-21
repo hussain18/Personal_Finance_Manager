@@ -1,0 +1,86 @@
+.getting-started-container {
+    padding: 6% 10%;
+    margin-top: 2.5%;
+    border-radius: 30px;
+    margin-bottom: 7px;
+    text-align: center;
+    justify-content: center;
+    transition-property: all;
+    transition-duration: 300ms;
+    transition-timing-function:ease-in-out;
+    color: #fff;
+    background-image: url("../img/get_started_background.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: rgba(16, 77, 8,0.2);
+    box-shadow: 3px 3px 5px gray;
+}
+
+
+.hovered:hover {
+    transform: scale(1.0721342);
+    box-shadow: 7px 7px 10px rgba(0, 0, 0, 0.593);
+}
+
+.landing-components {
+    padding: 5%;
+    margin-top: 1.5%;
+    border-radius: 30px;
+    margin-bottom: 7px;
+    justify-content: center;
+    transition-property: all;
+    transition-duration: 300ms;
+    transition-timing-function:ease-in-out;
+    color: #fff;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color: rgba(5, 10, 0, 0.552);
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.435);
+}
+
+.text-box {
+    background-color: rgba(0, 0, 0, 0.752);
+    border: 1px solid rgba(255, 255, 255, 0.228);
+    padding: 4%;
+}
+
+.landing-title {
+    margin-bottom: 3%;
+    font-weight: 700;
+    text-align: center;
+}
+
+
+
+/* Card Style */
+.card-img {
+    height: 100px;
+    width: auto;
+    margin-top: 5%;
+    margin-bottom: 2%;
+}
+
+.col {
+    margin-right: 4%;
+    transition: all 200ms ease-in-out;
+}
+
+.col:hover {
+    transform: scale(1.201021)
+}
+
+/* Backgrounds */
+.contact-us-b {
+    background-image: url('../img/contact_us_background.jpg');
+}
+
+.about-app-b {
+    background-image: url('../img/about_app_background.jpg');
+}
+
+.our-team-b {
+    background-image: url('../img/our_team_background.jpg');
+}
+

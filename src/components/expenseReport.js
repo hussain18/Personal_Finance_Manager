@@ -164,6 +164,7 @@ function getStatusStyle(expectedExpense, expense, isExpanded) {
 
 
 ///////////////////// VIEWS OF EACH REPORT ELEMENT \\\\\\\\\\\\\\\\\\\\\
+//TODO: Make views expand softly 
 
 function ListTitle(props) {
     return <div className="component-container container-hovered fs-4"
@@ -355,7 +356,7 @@ class YearsView extends Component {
 
         return this.state.expanded ?
             <div 
-                className = "component-container" 
+                className = "component-container container-hovered" 
                 style ={styleExpanded} >
                 
                 <Title 
