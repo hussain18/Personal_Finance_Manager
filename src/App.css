@@ -24,9 +24,14 @@
 .container-hovered:hover {
     transform: scale(1.025555);
     box-shadow: 3px 3px 5px gray;
-    
 }
 
 .form-style {
     padding: 5%;
+}
+
+.page-title {
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 2%;
 }

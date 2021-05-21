@@ -38,6 +38,8 @@ export default class Settings extends Component {
 
             <NavBar settings = ' active' />
 
+            <h1 className = 'page-title'>Settings</h1>
+
             <form onSubmit={this.handleSubmit} className = "form-floating form-style component-container">
                 <div className = "input-group input-group-lg mb-3 form-floating">
                     <input 

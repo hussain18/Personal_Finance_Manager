@@ -109,6 +109,8 @@ class MakePlan extends Component {
                     settings = ''
                     expenseReport = ''/>
 
+                <h1 className = 'page-title'>Make Plan</h1>
+
                 {this.state.alert.active ? 
                     <div className="alert alert-danger" role="alert">
                     {this.state.alert.message}

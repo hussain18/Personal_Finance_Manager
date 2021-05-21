@@ -414,6 +414,8 @@ class ExpenseReport extends Component {
                 <NavBar 
                     expenseReport = ' active'/>
 
+                <h1 className = 'page-title'>Expense Report</h1>
+
                 <ul type="none" style = {ulStyle}>
                     {yearsViewList}
                 </ul>
