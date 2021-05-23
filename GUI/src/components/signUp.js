@@ -1,6 +1,7 @@
 import React, { Component} from 'react'
 import NavBar from './nav.js'
 import {bgColors} from './styles/backgroundColors.js'
+import {POST} from '../api.js'
 
 export default class Settings extends Component {
     constructor(props) {
@@ -20,10 +21,10 @@ export default class Settings extends Component {
     }
 
     handleSubmit(event) {
-
-        console.log("Submitted")
-
         event.preventDefault()
+        
+        POST('/posts', () => this.state)
+        .then(() => console.log("Submitted"))
     }
 
     render() {
@@ -157,3 +158,6 @@ export default class Settings extends Component {
         </div>
     }
 }
+
+
+//TODO: fix password problem (it repeats itself in confirm password automatically)

@@ -22,8 +22,6 @@ export default function ProgressBar (props) {
         background: props.background,
     }
 
-    console.log(progressStyle)
-
     return <ProgressHolder 
         background = {props.background}>
 
