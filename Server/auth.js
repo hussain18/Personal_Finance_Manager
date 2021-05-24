@@ -1,6 +1,27 @@
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
+const db = require('./db')
 
 // Authenticate user
+const authenticateUser = async (user) => {
+    const password = user.password
+    const username = user.username
+
+    if(!username || !password) return false
+
+    const dbUser = db.getUserById(username) 
+    if(!dbUser) return false
+
+    const hash = dbUser.password
+
+    try{
+        const result = await bcrypt.compare(password, hash)
+        return result
+    } catch (err) {
+        console.log('USER_PASSWORD_MATCHING_ERROR: \n' + err) 
+        return false;
+    }
+}
 
 // Authenticate tokens
 const authenticateToken = (req, res, next) => {
@@ -23,5 +44,6 @@ const createTokens = (user) => {
 
 module.exports = {
     authenticateToken,
-    createTokens
+    createTokens,
+    authenticateUser,
 }

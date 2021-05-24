@@ -106,9 +106,3 @@ module.exports = {
     getAuth,
     removeAuth,
 }
-
-
-/// TODO: create two types of requests authorized none authorized
-// non-authorized: login, sign up
-// authorized: 
-// create token system to get token and refresh-token and use refresh token to get new tokens

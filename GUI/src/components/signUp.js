@@ -1,7 +1,7 @@
 import React, { Component} from 'react'
 import NavBar from './nav.js'
 import {bgColors} from './styles/backgroundColors.js'
-import {login} from '../api.js'
+import {signup} from '../api.js'
 
 export default class Settings extends Component {
     constructor(props) {
@@ -23,9 +23,12 @@ export default class Settings extends Component {
     handleSubmit(event) {
         event.preventDefault()
 
-        const userData = {name: 'username'}
+        const userData = {
+            username: 'username',
+            password: 'pass'
+        }
         
-        login(userData)
+        signup(userData)
         .then(() => console.log("Submitted"))
     }
 

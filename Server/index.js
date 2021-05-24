@@ -2,6 +2,8 @@ const express = require('express')
 const cors = require("cors")
 const jwt = require('jsonwebtoken')
 const auth = require('./auth.js')
+const bcrypt = require('bcrypt')
+const db = require('./db')
 require('dotenv').config()
 
 app = express()
@@ -15,15 +17,13 @@ app.use(express.urlencoded({ extended: true }))
 // Auth assets
 const authenticateToken = auth.authenticateToken
 const createToken = auth.createTokens
-
-// TEST...
-let refreshTokens = []
+const saltRound = 10
 
 app.get('/', (req, res) => {
     res.send('Hooray Server is RUNNING :)')
 })
 
-// Authoriztion Test...
+// Authorization Test...
 app.get('/users',authenticateToken, (req, res) => {
     res.json({userID: 'something',
         status: 'success'})
@@ -34,18 +34,53 @@ app.post('/posts', (req, res) => {
     res.json(req.body)
 })
 
-// Authentication Test...
+// Authentication routes
 app.post('/login', (req, res) => {
+    const user = req.body
+
+    if (!user) return res.sendStatus(400)
+
     //User authentication
+    auth.authenticateUser(user).then((result) => {
+        if(!result) return res.sendStatus(400)
 
-    //Token Creation 
-    const userName = req.body.userName
-    const user = {name: userName}
+        //Token Creation 
+        const userName = user.username
+        const User = {name: userName}
 
-    const accessToken = createToken(user)
-    const refreshToken = jwt.sign(user, process.env.REFRESH_ACCESS_TOKEN_SECRET)
-    refreshTokens.push(refreshToken)
-    res.json({accessToken: accessToken, refreshToken: refreshToken})
+        const accessToken = createToken(User)
+        const refreshToken = jwt.sign(User, process.env.REFRESH_ACCESS_TOKEN_SECRET)
+        res.json({accessToken: accessToken, refreshToken: refreshToken})
+
+    })
+
+})
+
+app.post('/signup', (req, res) => {
+    const userData = req.body
+
+    if (!userData) return res.sendStatus(400)
+
+    const password = userData.password
+    const username = userData.username
+    if (!password || !db.isUserUnique(username)) return res.sendStatus(400)
+
+    bcrypt.hash(password, saltRound, (err,hash) => {
+        if (err) {
+            console.log(err)
+            return res.sendStatus(500)
+        }
+
+        userData.password = hash
+        db.addUser(userData)
+        
+        // create jwt token
+        const User = {name: username}
+        const accessToken = createToken(User)
+        const refreshToken = jwt.sign(User, process.env.REFRESH_ACCESS_TOKEN_SECRET)
+        res.json({accessToken: accessToken, refreshToken: refreshToken})
+    })
+
 })
 
 app.post('/refresh-token', (req, res) => {
@@ -59,12 +94,6 @@ app.post('/refresh-token', (req, res) => {
     })
 })
 
-app.delete('/logout', (req, res) => {
-    userToken = req.body.token
-    if(!userToken) return res.sendStatus(400)
-    refreshTokens = refreshTokens.filter((token) => token != req.body.token)
-    return res.sendStatus(200)
-})
 
 // Listening
 app.listen(PORT, () => {
