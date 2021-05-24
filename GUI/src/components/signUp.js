@@ -83,7 +83,7 @@ export default class Settings extends Component {
                         id="floatingInputValue"
                         type='password'
                         name= 'confirm-password'
-                        value={this.state.password}
+                        value={this.state.confirmPassword}
                         onChange = {(event) => this.handleInputChange(event)} />
                     
                     <label 
@@ -158,6 +158,3 @@ export default class Settings extends Component {
         </div>
     }
 }
-
-
-//TODO: fix password problem (it repeats itself in confirm password automatically)
