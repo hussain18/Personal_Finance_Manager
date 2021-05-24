@@ -3,7 +3,7 @@ import React from 'react'
 import styled from 'styled-components'
 import {bgColors, bgColorsMidOp} from './styles/backgroundColors.js'
 import ProgressBar from './styles/templates.js'
-import {GET} from '../api.js'
+import {GET,authRequest} from '../api.js'
 
 
 
@@ -231,9 +231,6 @@ export default class UserProfile extends React.Component {
 
     render() {
         const status = this.getStatus()
-
-        //TEST...
-        GET('/users') 
 
         return <div className = "container">
             <NavBar 

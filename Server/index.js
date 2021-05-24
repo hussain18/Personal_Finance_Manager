@@ -50,8 +50,8 @@ app.post('/login', (req, res) => {
 
 app.post('/refresh-token', (req, res) => {
     const refreshToken = req.body.token
-    if(!refreshToken) res.sendStatus(401)
-    if(!refreshTokens.includes(refreshToken)) res.sendStatus(403)
+    if(!refreshToken) return res.sendStatus(401)
+    if(!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
     jwt.verify(refreshToken,process.env.REFRESH_ACCESS_TOKEN_SECRET, (err, user) => {
         if(err) return res.sendStatus(403)
         const accessToken = createToken({name: user.name})

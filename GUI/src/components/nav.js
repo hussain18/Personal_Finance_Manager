@@ -1,5 +1,9 @@
+import {getAuth, removeAuth} from '../api.js';
+
 
 function NavBar(props) {
+
+    const auth = getAuth()
 
     const profile = props.profile || ''
     const makePlan = props.makePlan || ''
@@ -28,12 +32,21 @@ function NavBar(props) {
                     <li className="nav-item">
                         <a className={"nav-link" + expenseReport} href="/expense_report">Expense Report</a>
                     </li>
-                    <li className="nav-item">
-                        <a className={"nav-link" + logIn} href="/log_in">Log In</a>
-                    </li>
-                    <li className="nav-item">
-                        <a className={"nav-link" + signUp} href="/sign_up">Sign Up</a>
-                    </li>
+
+                    {
+                        auth? 
+                        <li className="nav-item">
+                            <a onClick = {removeAuth} className={"nav-link"} href="/">Log Out</a>
+                        </li> :
+                        <>
+                            <li className="nav-item">
+                                <a className={"nav-link" + logIn} href="/log_in">Log In</a>
+                            </li>
+                            <li className="nav-item">
+                                <a className={"nav-link" + signUp} href="/sign_up">Sign Up</a>
+                            </li>
+                        </>
+                    }
                 </ul>
             </div>
         </div>

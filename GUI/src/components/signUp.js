@@ -1,7 +1,7 @@
 import React, { Component} from 'react'
 import NavBar from './nav.js'
 import {bgColors} from './styles/backgroundColors.js'
-import {POST} from '../api.js'
+import {login} from '../api.js'
 
 export default class Settings extends Component {
     constructor(props) {
@@ -22,8 +22,10 @@ export default class Settings extends Component {
 
     handleSubmit(event) {
         event.preventDefault()
+
+        const userData = {name: 'username'}
         
-        POST('/posts', () => this.state)
+        login(userData)
         .then(() => console.log("Submitted"))
     }
 
@@ -151,7 +153,10 @@ export default class Settings extends Component {
                     </label>
                 </div>
 
-                <button type="submit" className="btn btn-primary mt-3">Submit</button>
+                <button type="submit" className="btn btn-primary mt-3 mb-4">Submit</button>
+
+                <hr/>
+                <p>if you already have an account <a href = '/log_in'>click here</a> </p>
 
             </form>
         

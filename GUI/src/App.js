@@ -10,14 +10,17 @@ import ExpenseReport from './components/expenseReport.js'
 import {BrowserRouter, Switch, Route} from 'react-router-dom'
 import Login  from './components/login.js'
 import Signup from './components/signUp.js'
+import {getAuth} from './api.js'
 
 
 function App(props) {
 
+  const auth = getAuth()
+
   return (
     <BrowserRouter>
       <Switch>
-        <Route exact path = "/" component={LandingPage} />
+        <Route exact path = "/" component={() => <LandingPage auth = {auth}/>} />
         <Route path = "/profile" component={UserProfile} />
         <Route path = "/settings" component={Settings} />
         <Route path = "/expense_report" component={ExpenseReport} />

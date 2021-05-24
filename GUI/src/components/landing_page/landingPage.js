@@ -9,7 +9,8 @@ const phone_img = require('../img/phone_img.png').default
 const email_img = require('../img/email_img.png').default
 const address_img = require('../img/address_img.png').default
 
-
+// NON-Authorized link
+const NON_AUTH_LINK = '/'
 
 console.log(add_img)
 
@@ -17,7 +18,7 @@ console.log(add_img)
 function GetStartedButton(props) {
     return <a className ='btn btn-primary btn-lg mt-2' 
         href="/sign_up" >
-        Get Started...
+        {props.content}
     </a>
 }
 
@@ -55,6 +56,10 @@ function Row(props) {
 
 // Main Views
 function GettingStartedView(props) {
+
+    const buttonContent = props.auth ? 'To Your Profile...' : 'Get Started...'
+    const link = true ? '/profile' : '/sign_up'
+
     return <div 
         className="getting-started-container 
             hovered">
@@ -63,7 +68,9 @@ function GettingStartedView(props) {
             <h1 className='fs-1 fw-bolder '>Personal Finance Manger</h1>
             <hr className='mb-5'/>
             <p >Make it easy to manage the pocket</p>
-            <GetStartedButton/>
+            <GetStartedButton 
+                content = {buttonContent}
+                link = {link} />
         </div>
 
     </div>
@@ -107,12 +114,13 @@ function ContactUsView(props) {
 
 // Exported 
 export default function LandingPage(props) {
+
     return <div className = "container">
 
-        <GettingStartedView/>
-        <AboutAppView/>
-        <OurTeamView/>
-        <ContactUsView/>
+        <GettingStartedView auth = {props.auth} />
+        <AboutAppView auth = {props.auth} />
+        <OurTeamView auth = {props.auth} />
+        <ContactUsView auth = {props.auth} />
 
     </div>
 }
