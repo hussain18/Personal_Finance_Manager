@@ -73,6 +73,7 @@ app.post('/signup', (req, res) => {
 
         userData.password = hash
         db.addUser(userData)
+        db.allUsers()
         
         // create jwt token
         const User = {name: username}

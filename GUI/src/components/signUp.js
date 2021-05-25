@@ -1,5 +1,6 @@
 import React, { Component} from 'react'
 import NavBar from './nav.js'
+import {Redirect} from 'react-router-dom'
 import {bgColors} from './styles/backgroundColors.js'
 import {signup} from '../api.js'
 
@@ -8,6 +9,8 @@ export default class Settings extends Component {
         super(props)
 
         this.state = {}
+        this.handleChange = this.handleInputChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     handleInputChange(event) {
@@ -21,15 +24,10 @@ export default class Settings extends Component {
     }
 
     handleSubmit(event) {
-        event.preventDefault()
-
-        const userData = {
-            username: 'username',
-            password: 'pass'
-        }
         
-        signup(userData)
-        .then(() => console.log("Submitted"))
+        const userData = this.state
+        signup(userData).then(() => window.location.reload())
+        event.preventDefault()
     }
 
     render() {
@@ -127,20 +125,6 @@ export default class Settings extends Component {
                         Income Amount  </label>
 
                 </div>
-                <div className = "input-group input-group-lg mb-3 form-floating">
-                    <input 
-                        className="form-control" 
-                        id="floatingInputValue"
-                        type='text'
-                        name= 'incomePeriod'
-                        value={this.state.incomePeriod}
-                        onChange = {(event) => this.handleInputChange(event)} />
-                    
-                    <label 
-                        htmlFor="floatingInputValue" >
-                        Income Period  </label>
-
-                </div> 
                 </div>: null}
 
                 <div className="form-check">

@@ -1,4 +1,6 @@
 import React, { Component} from 'react'
+import {Redirect} from 'react-router-dom'
+import {login} from '../api'
 import NavBar from './nav.js'
 
 
@@ -7,6 +9,8 @@ export default class Settings extends Component {
         super(props)
 
         this.state = {}
+        this.handleChange = this.handleInputChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     handleInputChange(event) {
@@ -21,7 +25,8 @@ export default class Settings extends Component {
 
     handleSubmit(event) {
 
-        console.log("Submitted")
+        const userData = this.state
+        login(userData).then(() => window.location.reload())
 
         event.preventDefault()
     }
