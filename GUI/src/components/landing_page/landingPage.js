@@ -29,7 +29,8 @@ function Card(props) {
     return <>
         <img src = {img} className='rounded card-img' alt = "a png"/>
         <hr/>
-        <p className = 'fs-5 font-monospace'>{content}</p>
+        <a href='#' ><p className = 'card-text fs-5 font-monospace'>{content}</p></a>
+        
     </>
 }
 
@@ -65,7 +66,7 @@ function GettingStartedView(props) {
             hovered">
 
         <div className = 'text-box'>
-            <h1 className='fs-1 fw-bolder '>Personal Finance Manger</h1>
+            <h1 className='fs-1 fw-bolder '>Personal Finance Manager</h1>
             <hr className='mb-5'/>
             <p >Make it easy to manage the pocket</p>
             <GetStartedButton 
@@ -95,7 +96,7 @@ function OurTeamView(props) {
             <Row 
                 col_1 = {<Card img = {team_member_img} content = 'Talib Hussain Naseri'/>}
                 col_2 = {<Card img = {team_member_img} content = 'Shantanu Suntake'/>}
-                col_3 = {<Card img = {team_member_img} content = 'Adarsh Kadewar'/>} />
+                col_3 = {<Card img = {team_member_img} content = 'Adarsh Kandewar'/>} />
         </div>
     </div>
 }

@@ -6,12 +6,12 @@ export default class Settings extends Component {
         super(props)
 
         this.state = {
-            name: 'Sagar Sikchi',
-            username: 'sikchi_123',
-            password: 'sikchi_456',
+            name: 'Talib Hussain Naseri',
+            username: 'thn8',
+            password: '123',
             email: 'sagar.sikchi@mail.com',
             isIncomeRegular: true,
-            incomeAmount: 40000,
+            incomeAmount: 42000,
             incomePeriod: 'monthly',
         }
     }

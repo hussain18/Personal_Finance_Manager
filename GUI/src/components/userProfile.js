@@ -150,7 +150,7 @@ export default class UserProfile extends React.Component {
         super(props);
 
         this.state = {
-            userName: 'Sagar Sikchi',
+            userName: 'Talib Hussain Naseri',
             picture: 'https://www.jbldrains.com/wp-content/uploads/2015/02/person-icon.png',
             hasPlan: true,
             income: 420000,

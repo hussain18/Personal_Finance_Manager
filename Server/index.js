@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken')
 const auth = require('./auth.js')
 const bcrypt = require('bcrypt')
 const db = require('./db')
+const models = require('./models')
 require('dotenv').config()
 
 app = express()
@@ -13,6 +14,9 @@ PORT = process.env.PORT || 3001
 app.use(cors())
 app.use(express.json()) 
 app.use(express.urlencoded({ extended: true }))
+
+// Database Connection
+db.connDB()
 
 // Auth assets
 const authenticateToken = auth.authenticateToken
@@ -100,6 +104,7 @@ app.post('/refresh-token', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`)
 })
+
 
 
 // TODO: Up Next Task is to use mongoose to connect to database

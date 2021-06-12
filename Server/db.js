@@ -1,4 +1,20 @@
+const mongoose = require('mongoose')
 
+// Database Connection
+const connDB = () => {
+    mongoose.connect("mongodb://localhost:27017/pfmDB", {
+    useNewUrlParser: "true",
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+    useCreateIndex: true
+    })
+    mongoose.connection.on("error", err => {
+    console.log("DATABASE_CONNECTION_ERROR: \n", err)
+    })
+    mongoose.connection.on("connected", (err, res) => {
+    console.log("DATABASE CONNECTION SUCCESSFUL")
+    })
+}
 
 // Some demo database (it is not actual database it just represents it)
 // Users should contain the followings:
@@ -30,4 +46,5 @@ module.exports = {
     addUser,
     allUsers,
     isUserUnique,
+    connDB,
 }
