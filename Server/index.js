@@ -75,9 +75,9 @@ app.post('/signup', (req, res) => {
             return res.sendStatus(500)
         }
 
+        // Saving new user to database
         userData.password = hash
-        db.addUser(userData)
-        db.allUsers()
+        db.user.createUser(userData)
         
         // create jwt token
         const User = {name: username}
@@ -91,7 +91,6 @@ app.post('/signup', (req, res) => {
 app.post('/refresh-token', (req, res) => {
     const refreshToken = req.body.token
     if(!refreshToken) return res.sendStatus(401)
-    if(!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
     jwt.verify(refreshToken,process.env.REFRESH_ACCESS_TOKEN_SECRET, (err, user) => {
         if(err) return res.sendStatus(403)
         const accessToken = createToken({name: user.name})

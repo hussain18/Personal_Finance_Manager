@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const user = require('./user')
 
 // Database Connection
 const connDB = () => {
@@ -47,4 +48,5 @@ module.exports = {
     allUsers,
     isUserUnique,
     connDB,
+    user,
 }
