@@ -5,25 +5,32 @@ const planModel =  require('./planModel')
 const expenseModel =  require('./expenseModel')
 const incomeModel =  require('./incomeModel')
 
-const saveModel = (model) => {
-    model.save()
-    .catch(err => console.log('MODEL_SAVING_ERROR: \n',err))
+const saveModel = async (model) => {
+    try {
+        if (!model) throw new Error("No/Null/Undefined Model passed")
+        await model.save(model)
+    } catch (err) {
+        console.log('MODEL_SAVING_ERROR: \n',err)
+    }
 }
 
-const findOneModel = (model, condition) => {
-    model.findOne(condition)
-    .exec((err, model) => {
-        if (err) return handleError(err)
-        return model
-    })
+const findOneModel = async (model, condition) => {
+
+    try{
+        const record = await model.findOne(condition).exec()
+        return record
+    } catch (err) {
+        return handleError(err)
+    }
 }
 
-const findModel = (model, condition) => {
-    model.find(condition) 
-    .exec((err, results) => {
-        if (err) return handleError(err)
-        return results
-    })
+const findModel = async (model, condition) => {
+    try{
+        const records = await model.find(condition).exec()
+        return records
+    } catch (err) {
+        return handleError(err)
+    }
 }
 
 module.exports = {

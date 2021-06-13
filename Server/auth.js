@@ -9,12 +9,14 @@ const authenticateUser = async (user) => {
 
     if(!username || !password) return false
 
-    const dbUser = db.getUserById(username) 
+    const dbUser = await db.user.getUser(username) 
     if(!dbUser) return false
 
     const hash = dbUser.password
 
     try{
+        console.log(dbUser)
+        console.log(hash, password)//test...
         const result = await bcrypt.compare(password, hash)
         return result
     } catch (err) {
@@ -38,6 +40,7 @@ const authenticateToken = (req, res, next) => {
 
 // Create Tokens
 const createTokens = (user) => {
+    // TODO: should think of how much expiration time is the best
     return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1m'})
 }
 
