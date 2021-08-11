@@ -103,8 +103,3 @@ app.post('/refresh-token', (req, res) => {
 app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`)
 })
-
-
-
-// TODO: Up Next Task is to use mongoose to connect to database
-// study: https://www.phpcodingstuff.com/blog/how-to-connect-mongoose-with-express-application.html

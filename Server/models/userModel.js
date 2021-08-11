@@ -27,6 +27,18 @@ const userSchema = new Schema({
     incomeAmount: {
         type: Number,
         min: 0,
+    },
+    expenses: [{
+        type: String,
+        required: false,
+    }],
+    Incomes: [{
+        type: String,
+        required: false,
+    }],
+    plan: {
+        type: String,
+        required: false,
     }
 
 })

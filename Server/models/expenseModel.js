@@ -18,6 +18,10 @@ const expenseSchema = new Schema({
         type: Number,
         required: true,
         min: 0
+    },
+    username: {
+        type: String,
+        required:true,
     }
 
 })

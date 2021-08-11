@@ -15,6 +15,10 @@ const planSchema = new Schema({
     endDate: {
         type: Number,
         required: true
+    },
+    username: {
+        type: String,
+        required:true,
     }
 
 })
