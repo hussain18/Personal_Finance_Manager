@@ -9,8 +9,6 @@ const create = async ({ username, amount }) => {
     // Creating an expense model's data
     const expenseData = { username, amount };
 
-    // console.log("Expense data: ", expenseData) //test...
-
     const newExpense = new expenseModel(expenseData);
     await models.saveModel(newExpense);
   } catch (err) {

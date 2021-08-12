@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const user = require('./user')
 const expense = require('./expense')
+const income = require('./income')
 
 // Database Connection
 const connDB = () => {
@@ -46,4 +47,5 @@ module.exports = {
     connDB,
     user,
     expense, 
+    income,
 }

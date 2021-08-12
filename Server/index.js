@@ -43,7 +43,6 @@ app.post('/spendMoney',authenticateToken, (req, res) => {
     const expenseData = {username: req.user.name, amount: req.body.amount}
     const updateFilter = {userName: req.user.name, dateAdded: new Date().toDateString()}
 
-    // TODO: Day check should be done
     db.expense.getLastDayExpense(expenseData.username)
     .then(exists => !exists ? db.expense.create(expenseData):
     db.expense.update(expenseData))
@@ -54,6 +53,22 @@ app.post('/spendMoney',authenticateToken, (req, res) => {
         res.json(expense)
     })
     
+})
+
+app.post('/got-income',authenticateToken, (req, res) => {
+    const username = req.user.name;
+    const amount = req.body.amount;
+
+    if(!amount) res.sendStatus(400)
+
+    // save to database 
+    db.income.addIncome({username: username, amount: amount})
+    .then(() => {
+        return db.income.getIncomes(username) //test...
+    })
+    .then((incomes) => {
+        res.json(incomes)
+    })
 })
 
 
@@ -116,7 +131,6 @@ app.post('/refresh-token', (req, res) => {
         return res.json({token: accessToken})
     })
 })
-
 
 // Listening
 app.listen(PORT, () => {
