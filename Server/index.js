@@ -38,6 +38,40 @@ app.post('/posts', (req, res) => {
     res.json(req.body)
 })
 
+// Authorized Operations
+app.post('/spendMoney',authenticateToken, (req, res) => {
+    const expenseData = {username: req.user.name, amount: req.body.amount}
+    const updateFilter = {userName: req.user.name, dateAdded: new Date().toDateString()}
+
+    db.expense.getLastDayExpense(expenseData.username)
+    .then(exists => !exists ? db.expense.create(expenseData):
+    db.expense.update(expenseData))
+    .then(() => {
+        return db.expense.getAll(expenseData.username) //test...
+    })
+    .then((expense) => {
+        res.json(expense)
+    })
+    
+})
+
+app.post('/got-income',authenticateToken, (req, res) => {
+    const username = req.user.name;
+    const amount = req.body.amount;
+
+    if(!amount) res.sendStatus(400)
+
+    // save to database 
+    db.income.addIncome({username: username, amount: amount})
+    .then(() => {
+        return db.income.getIncomes(username) //test...
+    })
+    .then((incomes) => {
+        res.json(incomes)
+    })
+})
+
+
 // Authentication routes
 app.post('/login', (req, res) => {
     const user = req.body
@@ -98,13 +132,7 @@ app.post('/refresh-token', (req, res) => {
     })
 })
 
-
 // Listening
 app.listen(PORT, () => {
     console.log(`Server is listening on port ${PORT}`)
 })
-
-
-
-// TODO: Up Next Task is to use mongoose to connect to database
-// study: https://www.phpcodingstuff.com/blog/how-to-connect-mongoose-with-express-application.html

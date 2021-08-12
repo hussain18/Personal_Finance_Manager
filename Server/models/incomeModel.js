@@ -8,8 +8,13 @@ const incomeSchema = new Schema({
         min: 1
     },
     date: {
-        type: Date,
+        type: String,
+        default: new Date().toUTCString(),
         required: true,
+    },
+    username: {
+        type: String,
+        required:true,
     }
 
 })

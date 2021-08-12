@@ -27,7 +27,7 @@ const authenticateUser = async (user) => {
 
 // Authenticate tokens
 const authenticateToken = (req, res, next) => {
-    const authHeader = req.headers.authorization
+    const authHeader = req.headers.authorization.split(' ')[1]
     const token = authHeader && authHeader
     if(token == null) return res.sendStatus(401)
     
@@ -40,8 +40,9 @@ const authenticateToken = (req, res, next) => {
 
 // Create Tokens
 const createTokens = (user) => {
-    // TODO: should think of how much expiration time is the best
-    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '1m'})
+    // TODO: should change it to shorter time (now it is only for testing purpose)
+    return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {expiresIn: '100m'})
+
 }
 
 
