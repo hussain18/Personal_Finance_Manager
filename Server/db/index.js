@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const user = require('./user')
+const expense = require('./expense')
 
 // Database Connection
 const connDB = () => {
@@ -16,11 +17,6 @@ const connDB = () => {
     console.log("DATABASE CONNECTION SUCCESSFUL")
     })
 }
-
-// Some demo database (it is not actual database it just represents it)
-// Users should contain the followings:
-// Full Name, user name, password, email
-const users  = []
 
 const getUserById = (username) => {
     const user =  users.filter((user) => user.username == username)
@@ -49,4 +45,5 @@ module.exports = {
     isUserUnique,
     connDB,
     user,
+    expense, 
 }

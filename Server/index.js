@@ -38,6 +38,25 @@ app.post('/posts', (req, res) => {
     res.json(req.body)
 })
 
+// Authorized Operations
+app.post('/spendMoney',authenticateToken, (req, res) => {
+    const expenseData = {username: req.user.name, amount: req.body.amount}
+    const updateFilter = {userName: req.user.name, dateAdded: new Date().toDateString()}
+
+    // TODO: Day check should be done
+    db.expense.getLastDayExpense(expenseData.username)
+    .then(exists => !exists ? db.expense.create(expenseData):
+    db.expense.update(expenseData))
+    .then(() => {
+        return db.expense.getAll(expenseData.username) //test...
+    })
+    .then((expense) => {
+        res.json(expense)
+    })
+    
+})
+
+
 // Authentication routes
 app.post('/login', (req, res) => {
     const user = req.body

@@ -43,7 +43,7 @@ export default class Settings extends Component {
                         className="form-control" 
                         id="floatingInputValue"
                         type='text'
-                        name= 'name'
+                        name= 'completeName'
                         value={this.state.name}
                         onChange = {(event) => this.handleInputChange(event)} />
                     
