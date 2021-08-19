@@ -12,13 +12,15 @@ const planSchema = new Schema({
         required: true,
         min: 1,
     }, 
-    endDate: {
-        type: Number,
+    Date: {
+        type: String,
+        default: new Date().toDateString(),
         required: true
     },
     username: {
         type: String,
         required:true,
+        unique: true
     }
 
 })
