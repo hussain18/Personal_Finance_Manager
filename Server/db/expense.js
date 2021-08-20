@@ -1,4 +1,5 @@
 const models = require("../models");
+const totals = require("./totals");
 const expenseModel = models.expenseModel;
 
 const create = async ({ username, amount }) => {
@@ -6,11 +7,19 @@ const create = async ({ username, amount }) => {
     if (!username || !amount)
       throw new Error("Username or amount is undefined");
 
+    const canUpdate = await totals.updateTotals({
+      username: username,
+      expense: amount,
+    });
+    if (!canUpdate)
+      return { success: false, message: "Not enough money to spend" };
+
     // Creating an expense model's data
     const expenseData = { username, amount };
 
     const newExpense = new expenseModel(expenseData);
     await models.saveModel(newExpense);
+    return { success: true };
   } catch (err) {
     console.log(err);
   }
@@ -29,33 +38,46 @@ const getAll = async (username) => {
 };
 
 const getLastDayExpense = async (username) => {
-  try{
+  try {
     // to get or create a record for today's expenses
     const today = new Date().toDateString();
     const todayExpense = await models.findOneModel(expenseModel, {
-        username: username,
-        dateAdded: today,
+      username: username,
+      dateAdded: today,
     });
 
     return todayExpense ? true : false;
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
 };
 
-const update = async ({username, amount}) => {
+const update = async ({ username, amount }) => {
   try {
-    const today = new Date().toDateString()
-    const oldExpense = await models.findOneModel(expenseModel, {username: username, dateAdded: today});
-    const newExpense = {amount: oldExpense.amount + amount};
+    if (!username || !amount)
+      throw new Error("db.expense.update(): username/amount is undefined");
+
+    const canUpdate = await totals.updateTotals({
+      username: username,
+      expense: amount,
+    });
+    if (!canUpdate)
+      return { success: false, message: "Not enough money to spend" };
+
+    const today = new Date().toDateString();
+    const oldExpense = await models.findOneModel(expenseModel, {
+      username: username,
+      dateAdded: today,
+    });
+    const newExpense = { amount: oldExpense.amount + amount };
     const updated = await models.findOneAndUpdate(
       expenseModel,
-      {username: username, dateAdded: today},
+      { username: username, dateAdded: today },
       newExpense
     );
-    return updated;
+    return {success: true};
   } catch (err) {
-    console.log(err)
+    console.log(err);
   }
 };
 

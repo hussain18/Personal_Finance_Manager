@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const planSchema = new Schema({
+const loanSchema = new Schema({
     amount: {
         type: Number,
         required: true,
@@ -20,11 +20,22 @@ const planSchema = new Schema({
     username: {
         type: String,
         required:true,
-        unique: true
+    },
+    isDebt: {
+        type: Boolean,
+        required: true,
+    },
+    isActive: {
+        type: Boolean,
+        required: true,
+        default: true
+    },
+    toPerson: {
+        type: String,
+        default: 'Unknown'
     }
-
 })
 
-const planModel = mongoose.model('plan', planSchema)
+const loadModel = mongoose.model('loan', loanSchema)
 
-module.exports = planModel
+module.exports = loadModel
