@@ -4,6 +4,7 @@ const expense = require('./expense')
 const income = require('./income')
 const plan = require('./plan')
 const loan = require('./loan')
+const totals = require('./totals')
 
 // Database Connection
 const connDB = () => {

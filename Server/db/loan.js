@@ -1,4 +1,5 @@
 const models = require("../models");
+const totals = require("./totals");
 const loanModel = models.loanModel;
 
 const makeLoan = async ({ username, amount, duration, isDebt, toPerson }) => {
@@ -6,7 +7,13 @@ const makeLoan = async ({ username, amount, duration, isDebt, toPerson }) => {
     if (!username || !amount || !duration || isDebt === undefined)
       throw new Error("db.loan.js: Some data are missing");
 
-    if (!_validateLoan(amount, isDebt))
+    const canUpdateTotal = await totals.updateTotals({
+      username: username,
+      amount: amount,
+      isDebt: isDebt,
+    });
+
+    if (!isDebt && !canUpdateTotal)
       return { success: false, message: "you can't lend the amount" };
 
     const newLoan = new loanModel({
@@ -38,7 +45,22 @@ const getLoans = async (username) => {
 
 const setLoanInactive = async (loanID, username) => {
   try {
-    if (!loanID || !username) throw new Error("db.loan.js: loanID/username is null");
+    if (!loanID || !username)
+      throw new Error("db.loan.js: loanID/username is null");
+
+    // Update totals table
+    const loan = await models.findOneModel(loanModel, { _id: loanID });
+    const canUpdateTotal = await totals.updateTotals({
+      username: username,
+      amount: loan.amount,
+      isDebt: !loan.isDebt,
+    });
+
+    if (!canUpdateTotal)
+      return {
+        success: false,
+        message: "You don't have enough money to pay the debt",
+      };
 
     await models.findOneAndUpdate(
       loanModel,
@@ -46,16 +68,10 @@ const setLoanInactive = async (loanID, username) => {
       { isActive: false }
     );
 
-    return {success: true}
+    return { success: true };
   } catch (err) {
     console.log(err);
   }
-};
-
-const _validateLoan = (amount, isDebt) => {
-  //TODO: it is pending for reports part to be completed
-
-  return true;
 };
 
 module.exports = {

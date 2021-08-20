@@ -49,13 +49,7 @@ app.post("/spendMoney", authenticateToken, (req, res) => {
     .getLastDayExpense(expenseData.username)
     .then((exists) =>
       !exists ? db.expense.create(expenseData) : db.expense.update(expenseData)
-    )
-    .then(() => {
-      return db.expense.getAll(expenseData.username); //test...
-    })
-    .then((expense) => {
-      res.json(expense);
-    });
+    ).then(response => res.json(response))
 });
 
 app.post("/got-income", authenticateToken, (req, res) => {
@@ -67,12 +61,7 @@ app.post("/got-income", authenticateToken, (req, res) => {
   // save to database
   db.income
     .addIncome({ username: username, amount: amount })
-    .then(() => {
-      return db.income.getIncomes(username); //test...
-    })
-    .then((incomes) => {
-      res.json(incomes);
-    });
+    .then((response) => res.json(response))
 });
 
 app.post("/plan/make-plan", authenticateToken, (req, res) => {
