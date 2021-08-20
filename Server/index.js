@@ -75,7 +75,7 @@ app.post("/got-income", authenticateToken, (req, res) => {
     });
 });
 
-app.post("/make-plan", authenticateToken, (req, res) => {
+app.post("/plan/make-plan", authenticateToken, (req, res) => {
   const { amount, duration } = req.body;
   if (!amount || !duration) res.sendStatus(400);
 
@@ -84,17 +84,41 @@ app.post("/make-plan", authenticateToken, (req, res) => {
   db.plan
     .makePlan({ username: username, amount: amount, duration: duration })
     .then((response) => {
-      res.json(response)
-    })
+      res.json(response);
+    });
 });
 
-app.delete('/remove-plan',authenticateToken, (req,res) => {
-    const username = req.user.name
+app.delete("/plan/remove-plan", authenticateToken, (req, res) => {
+  const username = req.user.name;
 
-    db.plan.removePlan(username)
-    .then((response) => {
-        res.json(response)
-    })
+  db.plan.removePlan(username).then((response) => {
+    res.json(response);
+  });
+});
+
+app.post("/loan/make-loan", authenticateToken, (req, res) => {
+  const { amount, duration, isDebt } = req.body;
+  if (!amount || !duration || isDebt === undefined) return res.sendStatus(400);
+
+  const username = req.user.name;
+
+  db.loan.makeLoan({
+    username: username,
+    amount: amount,
+    duration: duration,
+    isDebt: isDebt,
+    toPerson: req.body.toPerson
+  }).then((dbResponse) => {res.json(dbResponse)})
+});
+
+app.patch('/loan/set-loan-inactive', authenticateToken, (req, res) => {
+  const loanID = req.body.loanID
+  const username = req.user.name
+
+  if(!loanID) return res.sendStatus(400)
+
+  db.loan.setLoanInactive(loanID, username)
+  .then((response) => res.json(response))
 })
 
 // Authentication routes

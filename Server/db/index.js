@@ -3,6 +3,7 @@ const user = require('./user')
 const expense = require('./expense')
 const income = require('./income')
 const plan = require('./plan')
+const loan = require('./loan')
 
 // Database Connection
 const connDB = () => {
@@ -50,4 +51,5 @@ module.exports = {
     expense, 
     income,
     plan,
+    loan,
 }

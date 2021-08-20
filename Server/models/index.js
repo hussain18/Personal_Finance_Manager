@@ -4,6 +4,7 @@ const userModel = require("./userModel");
 const planModel = require("./planModel");
 const expenseModel = require("./expenseModel");
 const incomeModel = require("./incomeModel");
+const loanModel = require("./loanModel");
 
 const saveModel = async (model) => {
   try {
@@ -42,6 +43,7 @@ module.exports = {
   planModel,
   expenseModel,
   incomeModel,
+  loanModel,
   saveModel,
   findOneModel,
   findModel,
