@@ -28,17 +28,14 @@ const userSchema = new Schema({
         type: Number,
         min: 0,
     },
-    expenses: [{
-        type: String,
-        required: false,
-    }],
-    Incomes: [{
-        type: String,
-        required: false,
-    }],
     plan: {
         type: String,
         required: false,
+    }, 
+    incomePeriod: {
+        type: String,
+        required: true,
+        default: 'monthly'
     }
 
 })

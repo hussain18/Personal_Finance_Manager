@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const auth = require("./auth.js");
 const bcrypt = require("bcrypt");
 const db = require("./db");
-const models = require("./models");
+const reports = require('./reports')
 require("dotenv").config();
 
 app = express();
@@ -110,6 +110,12 @@ app.patch('/loan/set-loan-inactive', authenticateToken, (req, res) => {
   .then((response) => res.json(response))
 })
 
+// Report API
+app.get('/report/expense-report', authenticateToken, (req, res) => {
+  reports.wholeReport(req.user.name)
+  .then((response) => res.json(response))
+})
+
 // Authentication routes
 app.post("/login", (req, res) => {
   const user = req.body;
@@ -140,7 +146,7 @@ app.post("/signup", (req, res) => {
 
   const password = userData.password;
   const username = userData.username;
-  if (!password || !db.isUserUnique(username)) return res.sendStatus(400);
+  if (!password || db.user.getUser(username)) return res.sendStatus(400);
 
   bcrypt.hash(password, saltRound, (err, hash) => {
     if (err) {
