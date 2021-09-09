@@ -1,4 +1,4 @@
-const dbPlan = require("../db").plan;
+const dbPlan = require('../db').plan;
 
 const MONTH_DAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
@@ -10,6 +10,9 @@ const planReport = async (username) => {
     const startMonth = new Date(plan.Date).getMonth();
     const duration = plan.duration;
 
+    report.total = plan.amount;
+    report.duration = plan.duration;
+
     report.dailySavings = _getEveryDaySavings(amount, duration, startMonth);
 
     report.monthlySavings = _getEveryMonthSavings(
@@ -20,7 +23,7 @@ const planReport = async (username) => {
 
     return report;
   } catch (e) {
-    console.log("reports.plan.planReport():", e);
+    console.log('reports.plan.planReport():', e);
   }
 };
 

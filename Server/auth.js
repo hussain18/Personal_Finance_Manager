@@ -16,7 +16,6 @@ const authenticateUser = async (user) => {
 
     try{
         console.log(dbUser)
-        console.log(hash, password)//test...
         const result = await bcrypt.compare(password, hash)
         return result
     } catch (err) {

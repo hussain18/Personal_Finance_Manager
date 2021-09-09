@@ -36,7 +36,6 @@ const monthlyReport = async (username) => {
     });
 
     month.total = totalExpense;
-    // console.log(month) //test...
     report.push(JSON.parse(JSON.stringify(month)));
     return report;
   } catch (err) {

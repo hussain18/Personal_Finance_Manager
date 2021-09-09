@@ -29,15 +29,17 @@ const userSchema = new Schema({
         min: 0,
     },
     plan: {
+        default: false,
         type: String,
-        required: false,
     }, 
     incomePeriod: {
         type: String,
-        required: true,
         default: 'monthly'
+    },
+    incomeReceived: {
+        type: Boolean,
+        default: false,
     }
-
 })
 
 module.exports = mongoose.model('user', userSchema)

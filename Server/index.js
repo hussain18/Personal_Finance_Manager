@@ -116,6 +116,11 @@ app.get('/report/expense-report', authenticateToken, (req, res) => {
   .then((response) => res.json(response))
 })
 
+app.get('/report/profile-report', authenticateToken, (req, res) => {
+  reports.profileReport(req.user.name)
+  .then((response) => res.json(response))
+})
+
 // Authentication routes
 app.post("/login", (req, res) => {
   const user = req.body;
