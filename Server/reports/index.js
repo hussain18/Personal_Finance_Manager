@@ -1,9 +1,9 @@
 const expenses = require('./expenses');
-const plan = require('./plan');
 const incomes = require('./incomes');
 const total = require('../db/totals');
 const planReport = require('./plan');
 const user = require('../db/user');
+const dbLoans = require('../db/loan')
 
 const MONTH_NAMES = [
   'January',
@@ -123,8 +123,8 @@ const profileReport = async (username) => {
   return report
 };
 
-const debtReport = async () => {
-  // Creates a report object for profile page
+const debtReport = async (username) => {
+  return dbLoans.getLoans(username)
 };
 
 module.exports = {

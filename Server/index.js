@@ -24,7 +24,7 @@ const createToken = auth.createTokens;
 const saltRound = 10;
 
 app.get("/", (req, res) => {
-  res.send("Hooray Server is RUNNING :)");
+  res.sendStatus(418);
 });
 
 // Authorization Test...
@@ -118,6 +118,11 @@ app.get('/report/expense-report', authenticateToken, (req, res) => {
 
 app.get('/report/profile-report', authenticateToken, (req, res) => {
   reports.profileReport(req.user.name)
+  .then((response) => res.json(response))
+})
+
+app.get('/report/debt-report', authenticateToken, (req, res) => {
+  reports.debtReport(req.user.name)
   .then((response) => res.json(response))
 })
 
