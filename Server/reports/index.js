@@ -27,14 +27,11 @@ const wholeReport = async (username) => {
     const incomesReport = await incomes(username);
     const report = new Array();
 
-    // console.log(expensesReport)//test...
-
     expensesReport.map((yearExpenses) => {
       // Making each years expense report
       const thisYearIncome = incomesReport.filter(
         (years) => years.name === yearExpenses.name
       )[0];
-      console.log(thisYearIncome); //test...
 
       const yearReport = {
         name: yearExpenses.name,

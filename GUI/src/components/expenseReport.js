@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import NavBar from './nav.js'
 import {bgColors, bgColorsFullOp} from './styles/backgroundColors.js'
+import {reportReq} from '../api'
 
 ///////////////////// STYLINGS \\\\\\\\\\\\\\\\\\\\\
 const ulStyle = {
@@ -165,7 +166,6 @@ function getStatusStyle(expectedExpense, expense, isExpanded) {
 
 ///////////////////// VIEWS OF EACH REPORT ELEMENT \\\\\\\\\\\\\\\\\\\\\
 //TODO: Make views expand softly 
-
 function ListTitle(props) {
     return <div className="component-container container-hovered fs-4"
         style={{
@@ -220,51 +220,33 @@ function CompactView(props) {
     </div>
 }
 
-class DaysView extends Component {
+function YearsViewList(props) {
+    return props.list.map((year) => {
+        return <li key={props.list.indexOf(year)} style={{margin: 5}}>
+            <YearsView 
+                expanded = {false}
+                data = {year} />
+        </li>
+    })
+}
 
-    constructor(props) {
-        super(props)
+function DaysView(props) {
 
-        this.state = {
-            expanded: false,
-            data: props.data,
-        }
-    }
+    const day = props.data
+    const expectedExpense = day.income;
+    const expense = day.expense;
+    const style = getStatusStyle(expectedExpense, expense, false);
+    const savings = day.saving;
+    const name = day.day;
+    const expenseOverExpected = expense.toString() + '/' + expectedExpense.toString();
 
-    expandToggling() {
-        this.setState({
-            expanded: !this.state.expanded
-        })
-    }
-
-    render() {
-
-        const expectedExpense = this.state.data.toBeSpent;
-        const expense = this.state.data.totalExpense;
-        const style = getStatusStyle(expectedExpense, expense, false);
-        const savings = expectedExpense-expense;
-        const name = this.state.data.day;
-        const expenseOverExpected = expense.toString() + '/' + expectedExpense.toString();
-
-        return this.state.expanded ?
-            <div 
-                className = "component-container container-hovered" 
-                style ={style}
-                onClick = {() => this.expandToggling()} >
-                
-                expanded days
-
-            </div> :
-            <div 
-                className = "component-container container-hovered" 
-                style ={style}
-                onClick = {() => this.expandToggling()} >
-                <CompactView name = {name}
-                    savings = {savings}
-                    expense = {expenseOverExpected} />
-            </div>
-    }
-
+    return <div 
+        className = "component-container container-hovered" 
+        style ={style} >
+        <CompactView name = {name}
+            savings = {savings}
+            expense = {expenseOverExpected} />
+    </div>
 }
 
 class MonthsView extends Component {
@@ -286,11 +268,11 @@ class MonthsView extends Component {
 
     render() {
 
-        const expectedExpense = this.state.data.toBeSpent;
-        const expense = this.state.data.totalExpense;
+        const expectedExpense = this.state.data.income;
+        const expense = this.state.data.expense;
         const styleExpanded = getStatusStyle(expectedExpense, expense, true);
         const style = getStatusStyle(expectedExpense, expense, false);
-        const savings = expectedExpense-expense;
+        const savings = this.state.data.saving;
         const name = this.state.data.name;
         const expenseOverExpected = expense.toString() + '/' + expectedExpense.toString();
 
@@ -347,10 +329,11 @@ class YearsView extends Component {
 
     render() {
 
-        const expectedExpense = this.state.data.toBeSpent;
-        const expense = this.state.data.totalExpense;
-        const savings = expectedExpense-expense;
-        const name = this.state.data.year;
+        const data = this.state.data;
+        const expectedExpense = data.income;
+        const expense = data.expense;
+        const savings = data.saving;
+        const name = data.name;
         const expenseOverExpected = expense.toString() + '/' + expectedExpense.toString();
         const styleExpanded = getStatusStyle(expectedExpense, expense, true);
 
@@ -360,16 +343,16 @@ class YearsView extends Component {
                 style ={styleExpanded} >
                 
                 <Title 
-                    name = {this.state.data.year}
+                    name = {name}
                     fontSize = {25} />
                 
                 <ul type = 'none' style = {ulStyle}>
 
                     <ListTitle name='Month' />
 
-                    {this.state.data.months.map((month) => 
+                    {data.months.map((month) => 
                     <MonthsView
-                        data = {month} /> ) }
+                        data = {month}/> ) }
                 </ul>
 
                 <CollapseButton onClick = {() => this.expandToggling()}/>
@@ -392,22 +375,21 @@ class ExpenseReport extends Component {
     constructor(props) {
         super(props);
         this.state = { 
-            years: JSON.parse(JSON.stringify(years)),
+            years: null,
         };
+    }
+
+    async componentDidMount() {
+        const years = await reportReq('/expense-report');
+        this.setState({
+            years: years
+        })
     }
     
     
     render() {
 
         const years = this.state.years
-
-        const yearsViewList = years.map((year) => {
-            return <li key={years.indexOf(year)} style={{margin: 5}}>
-                <YearsView 
-                    expanded = {false}
-                    data = {year} />
-            </li>
-        })
 
         return (
             <div className = "container">
@@ -417,7 +399,8 @@ class ExpenseReport extends Component {
                 <h1 className = 'page-title'>Expense Report</h1>
 
                 <ul type="none" style = {ulStyle}>
-                    {yearsViewList}
+                    {(years === null)? <p>Loading....</p>: // TODO: make it more of a loading style :[
+                        <YearsViewList list = {years} />}
                 </ul>
             
             </div>

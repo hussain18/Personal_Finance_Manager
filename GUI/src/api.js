@@ -96,6 +96,34 @@ async function POST(opts){
 
 }
 
+async function PATCH(opts){
+
+    const URL = opts.url
+    const header = opts.headers ? opts.headers : HEADERS
+    const body = opts.body
+    const res = await axios.patch(URL, body) 
+    return res.data;
+
+}
+
+// Report requests:
+const reportReq = async (url) => {
+    try{
+        return authRequest('/report'+url, GET)
+    } catch (err) {
+        console.log('REPORT_REQUEST_ERROR: \n', err)
+    }
+}
+
+// Plan Requests:
+const planReq = async (url, request, body) => {
+    try {
+        return authRequest('/plan' + url, request, body)
+    } catch (err) {
+        console.log('PLAN_REQUEST_ERROR: \n', err)
+    }
+}
+
 
 module.exports = {
     signup,
@@ -103,6 +131,9 @@ module.exports = {
     authRequest,
     GET,
     POST,
+    PATCH,
     getAuth,
     removeAuth,
+    reportReq,
+    planReq,
 }
