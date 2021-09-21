@@ -1,5 +1,6 @@
-const dbExpense = require("../db").expense;
+const dbExpense = require('../db').expense;
 
+// History Reports
 const monthlyReport = async (username) => {
   try {
     const expenses = await dbExpense.getAll(username);
@@ -27,7 +28,7 @@ const monthlyReport = async (username) => {
       }
 
       const dayReport = {
-        day: date.getDay(),
+        day: date.getDate(),
         amount: expense.amount,
       };
 
@@ -39,7 +40,7 @@ const monthlyReport = async (username) => {
     report.push(JSON.parse(JSON.stringify(month)));
     return report;
   } catch (err) {
-    console.log("reports.expenses.monthlyReport: ", err);
+    console.log('reports.expenses.monthlyReport: ', err);
   }
 };
 
@@ -82,8 +83,37 @@ const yearlyReport = async (username) => {
 
     return report;
   } catch (err) {
-    console.log("reports.expenses.yearlyReport():", err);
+    console.log('reports.expenses.yearlyReport():', err);
   }
 };
 
-module.exports = yearlyReport;
+// Current Reports
+const thisYearReport = async (username) => {
+  const historyReport = await yearlyReport(username);
+  const thisYear = new Date().getFullYear();
+
+  return historyReport.filter((year) => year.name === thisYear)[0];
+};
+
+const thisMonthReport = async (username) => {
+  const thisYearExpense = await thisYearReport(username);
+  const historyReport = thisYearExpense.expenses;
+  const thisMonth = new Date().getMonth();
+
+  return historyReport.filter((month) => month.name === thisMonth)[0];
+};
+
+const todayReport = async (username) => {
+  const thisMonthExpense = await thisMonthReport(username);
+  const historyReport = thisMonthExpense.expenses;
+  const today = new Date().getDate();
+
+  return historyReport.filter((day) => day.day === today)[0];
+};
+
+module.exports = {
+  thisYearReport,
+  thisMonthReport,
+  todayReport,
+  yearlyReport,
+};

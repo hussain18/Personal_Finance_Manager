@@ -23,8 +23,8 @@ const MONTH_DAYS = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
 const wholeReport = async (username) => {
   try {
-    const expensesReport = await expenses(username);
-    const incomesReport = await incomes(username);
+    const expensesReport = await expenses.yearlyReport(username);
+    const incomesReport = await incomes.yearlyReport(username);
     const report = new Array();
 
     expensesReport.map((yearExpenses) => {
@@ -81,15 +81,17 @@ const wholeReport = async (username) => {
 const profileReport = async (username) => {
   const report = new Object();
 
-  const income = await incomes(username);
-  const expense = await expenses(username);
+  const thisMonthInReport = await incomes.thisMonthReport(username);
+  const thisMonthExReport = await expenses.thisMonthReport(username);
+  const todayExpenses = await expenses.todayReport(username)
   const totals = await total.getTotal(username);
   const plan = await planReport(username)
   const dbUser = await user.getUser(username);
 
   const totalSaving = totals.totalInHand
-  const thisMonthIncome = income[income.length - 1].total;
-  const thisMonthExpense = expense[expense.length - 1].total;
+
+  const thisMonthIncome = thisMonthInReport.total
+  const thisMonthExpense = thisMonthExReport.total
   const currentMonth = new Date().getMonth()
 
   const toSpendEveryday = Math.floor(thisMonthIncome/MONTH_DAYS[currentMonth])
@@ -104,6 +106,7 @@ const profileReport = async (username) => {
   report.noMoney = noMoney
   report.toSpendToday = noMoney ? totalSaving : toSpendEveryday
   report.availableAmount = totalSaving
+  report.todayExpenses = todayExpenses.amount;
 
   // User Related Report
   report.isIncomeRegular = dbUser.isIncomeRegular

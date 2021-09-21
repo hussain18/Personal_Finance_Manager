@@ -15,7 +15,6 @@ const authenticateUser = async (user) => {
     const hash = dbUser.password
 
     try{
-        console.log(dbUser)
         const result = await bcrypt.compare(password, hash)
         return result
     } catch (err) {
@@ -27,7 +26,7 @@ const authenticateUser = async (user) => {
 // Authenticate tokens
 const authenticateToken = (req, res, next) => {
     const authHeader = req.headers.authorization
-    const token = authHeader && authHeader
+    const token = authHeader
     if(token == null) return res.sendStatus(401)
     
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {

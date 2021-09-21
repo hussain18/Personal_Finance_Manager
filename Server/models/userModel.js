@@ -30,7 +30,7 @@ const userSchema = new Schema({
     },
     plan: {
         default: false,
-        type: String,
+        type: Boolean,
     }, 
     incomePeriod: {
         type: String,

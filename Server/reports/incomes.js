@@ -1,5 +1,6 @@
-const dbIncomes = require("../db").income;
+const dbIncomes = require('../db').income;
 
+// History reporting
 const monthlyReport = async (username) => {
   try {
     const incomes = await dbIncomes.getIncomes(username);
@@ -27,7 +28,7 @@ const monthlyReport = async (username) => {
       }
 
       const dayReport = {
-        day: date.getDay(),
+        day: date.getDate(),
         amount: income.amount,
       };
 
@@ -39,7 +40,7 @@ const monthlyReport = async (username) => {
     report.push(JSON.parse(JSON.stringify(month)));
     return report;
   } catch (err) {
-    console.log("reports.incomes.monthlyReport: ", err);
+    console.log('reports.incomes.monthlyReport: ', err);
   }
 };
 
@@ -82,8 +83,37 @@ const yearlyReport = async (username) => {
 
     return report;
   } catch (err) {
-    console.log("reports.incomes.yearlyReport():", err);
+    console.log('reports.incomes.yearlyReport():', err);
   }
 };
 
-module.exports = yearlyReport;
+// Current date reporting
+const thisYearReport = async (username) => {
+  const historyReport = await yearlyReport(username);
+  const thisYear = new Date().getFullYear();
+
+  return historyReport.filter((year) => year.name === thisYear)[0];
+};
+
+const thisMonthReport = async (username) => {
+  const thisYearIncome = await thisYearReport(username);
+  const historyReport = thisYearIncome.incomes;
+  const thisMonth = new Date().getMonth();
+
+  return historyReport.filter((month) => month.name === thisMonth)[0];
+};
+
+const todayReport = async (username) => {
+  const thisMontIncomes = await thisMonthReport(username);
+  const historyReport = thisMontIncomes.incomes;
+  const today = new Date().getDate();
+
+  return historyReport.filter((day) => day.day === today)[0];
+};
+
+module.exports = {
+  todayReport,
+  thisMonthReport,
+  thisYearReport,
+  yearlyReport,
+};

@@ -23,6 +23,19 @@ const getUser = async (username) => {
     }
 }
 
+const updateUser = async (username, Data) => {
+    try {
+        if (!username) throw new Error('No username provided')
+        if (!Data) return {success: true}
+
+        await models.findOneAndUpdate(UserModel, {username: username}, Data)
+
+        return {success: true}
+    } catch (err) {
+        console.log('UPDATE_USER_ERROR: ', err)
+    }
+}
+
 const deleteUser = username => {
     // delete only one user
 }
@@ -30,7 +43,8 @@ const deleteUser = username => {
 module.exports = {
     createUser,
     getUser,
-    deleteUser
+    deleteUser,
+    updateUser,
 }
 
 // TODO: the file has following functionality

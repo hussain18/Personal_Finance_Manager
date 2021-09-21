@@ -3,7 +3,7 @@ import React from 'react'
 import styled from 'styled-components'
 import {bgColors, bgColorsMidOp} from './styles/backgroundColors.js'
 import ProgressBar from './styles/templates.js'
-import {GET,authRequest} from '../api.js'
+import {reportReq,authRequest, POST} from '../api.js'
 
 
 
@@ -92,9 +92,9 @@ class SingleInput extends React.Component {
 }
 
 function UserJumbotron(props) {
-    const toSaveToday = props.userData.hasPlan? props.userData.plan.amount/(props.userData.plan.duration * 30) : 0
-    const toSpendToday = props.userData.income/30-toSaveToday
-    const todayExpense = props.userData.todayExpense
+    const toSaveToday = props.userData.targetSave || 0
+    const toSpendToday = props.userData.toSpendToday
+    const todayExpense = props.userData.todayExpenses
     const expensePercentage = () => {
         let percentage = (todayExpense*95)/toSpendToday
         percentage = percentage > 100 ? 100 : percentage
@@ -112,8 +112,8 @@ function UserJumbotron(props) {
 
     return <div style={componentStyle} className="component-container container-hovered" >
             <h1 className="display-4" >
-                <UserImg picture = {props.userData.picture}/>
-                {props.userData.userName}
+                <UserImg picture = {props.userImg}/>
+                {props.userData.userCompleteName}
             </h1>
             <p className="lead">You have spent {todayExpense} out of {toSpendToday}</p>
             
@@ -150,35 +150,38 @@ export default class UserProfile extends React.Component {
         super(props);
 
         this.state = {
-            userName: 'Talib Hussain Naseri',
             picture: 'https://www.jbldrains.com/wp-content/uploads/2015/02/person-icon.png',
-            hasPlan: true,
-            income: 420000,
-            availableAmount: 20000,
-            plan: {
-                amount: 90000,
-                duration: 3,
-            },
-            isNewMonth: true,
-            isIncomeRegular: true,
-            todayExpense: 0,
+            userData: null,
         }
     }
 
-    onSalaryReceiving(salaryAmount) {
+    async componentDidMount() {
+        const user = await reportReq('/profile-report')
+        const userStatus = this.getStatus(user)
+        this.setState({
+            userData: user,
+            userStatus: userStatus
+        })
+    }   
+
+    async onSalaryReceiving(salaryAmount) {
         this.setState({
             isNewMonth: false,
             availableAmount: this.state.availableAmount + parseInt(salaryAmount),
         })
+
+        const res = await authRequest('/got-income', POST, {amount: parseInt(salaryAmount)})
+
+        if (!res.success) console.log(res.message)
     }
 
-    getStatus() {
+    getStatus(userData) {
         
         // Getting daily Expense Status
         let dailyExpenseStatus = '1'
 
-        const everydayEx = this.state.income/30
-        const todayEx = this.state.todayExpense
+        const everydayEx = userData.toSpendToday
+        const todayEx = userData.todayExpenses
         const expenseRate = todayEx/everydayEx
         
         if(expenseRate > 1) dailyExpenseStatus = '4';
@@ -188,14 +191,14 @@ export default class UserProfile extends React.Component {
 
         // Getting Plan Status
         let planStatus = '1'
-        const toSaveToday = this.state.hasPlan? this.state.plan.amount/(this.state.plan.duration * 30) : 0
+        const toSaveToday = userData.targetSave || 0
         const todaySaving = everydayEx - todayEx                                                                
         if(todaySaving < 0) planStatus = '4';
         else if (todaySaving === 0) planStatus = '2';
 
         // Getting available amount status
         let availableAmountStatus = '1'
-        const availableAmount = this.state.availableAmount
+        const availableAmount = userData.availableAmount
 
         if (availableAmount < 50) availableAmountStatus = '4'
         else if (availableAmount < 500) availableAmountStatus = '3'
@@ -203,9 +206,9 @@ export default class UserProfile extends React.Component {
         
         // Salary Receiving Status
         let salaryStatus = '2'
-        if(this.state.isIncomeRegular) {
+        if(userData.isIncomeRegular) {
             salaryStatus = '1'
-            if (this.state.isNewMonth) 
+            if (!userData.incomeReceived) 
                 salaryStatus = '3'; 
         } 
 
@@ -218,7 +221,7 @@ export default class UserProfile extends React.Component {
         }
     }
 
-    onSpend(amount) {
+    async onSpend(amount) {
 
         const prevEx = this.state.todayExpense || 0
         const newExpense = amount === '' ? 0 : parseInt(amount)
@@ -227,57 +230,64 @@ export default class UserProfile extends React.Component {
             todayExpense: prevEx + parseInt(newExpense),
             availableAmount: this.state.availableAmount - parseInt(newExpense),
         })
+
+        const res = await authRequest('/spendMoney', POST, {amount: newExpense})
+
     }
 
     render() {
-        const status = this.getStatus()
+        const status = this.state.userStatus
 
+        const user = this.state.userData
         return <div className = "container">
             <NavBar 
                 profile = ' active'/>
 
-            <UserJumbotron 
-                backgroundColorIndex = {status.backgroundColorIndex}
-                userData={this.state} 
-                style = {status.dailyExpenseStyle}/>
-
-            <p 
-                style = {{backgroundColor: statusColors[status.availableAmountStyle]}}
-                className = 'component-container container-hovered'
-                > 
-                You have {this.state.availableAmount} Money</p>
-
-            <SingleInput 
-                style = {status.defaultsStyle}
-                onSubmit = {(amount) => this.onSpend(amount)} 
-                inputType = 'number'
-                inputLabel = 'Your Expense Here'
-                inputSubmitLabel = "Spend"
-
-                />
+            {(user === null) ? <p>Loading...</p> : 
             
-            {this.state.isNewMonth ?
-            <SingleInput 
-                style = {status.salaryStyle}
-                onSubmit = {(salary) => this.onSalaryReceiving(salary)}
-                inputType = 'number'
-                inputSubmitLabel = 'Recieved My Salary'
-                defaultValue = {this.state.isIncomeRegular ? this.state.income : ''} /> :
+            <>
+                <UserJumbotron 
+                    backgroundColorIndex = {status.backgroundColorIndex}
+                    userData={user} 
+                    style = {status.dailyExpenseStyle}
+                    userImg = {this.state.picture}/>
+
                 <p 
-                    style={{backgroundColor: statusColors[status.salaryStyle]}}
+                    style = {{backgroundColor: statusColors[status.availableAmountStyle]}}
                     className = 'component-container container-hovered'
-                    >You have got your Salary</p> }
+                    > 
+                    You have {user.availableAmount} Money</p>
 
-            <PlanView 
-                style = {status.planStyle}
-                hasPlan = {this.state.hasPlan}
-                plan = {this.state.plan}
-                income = {this.state.income}
-                todayEx = {this.state.todayExpense} />
-            
+                <SingleInput 
+                    style = {status.defaultsStyle}
+                    onSubmit = {(amount) => this.onSpend(amount)} 
+                    inputType = 'number'
+                    inputLabel = 'Your Expense Here'
+                    inputSubmitLabel = "Spend"
+
+                    />
+                
+                { !user.incomeReceived ?
+                <SingleInput 
+                    style = {status.salaryStyle}
+                    onSubmit = {(salary) => this.onSalaryReceiving(salary)}
+                    inputType = 'number'
+                    inputSubmitLabel = 'Received My Salary'
+                    defaultValue = {user.isIncomeRegular ? user.incomeAmount : ''} /> :
+                    <p 
+                        style={{backgroundColor: statusColors[status.salaryStyle]}}
+                        className = 'component-container container-hovered'
+                        >You have got your Salary</p> }
+
+                <PlanView 
+                    style = {status.planStyle}
+                    hasPlan = {user.hasPlan}
+                    plan = {user.plan}
+                    income = {user.income}
+                    todayEx = {user.todayExpense} />
+            </>}
         </div>
     }
-
 }
 
 

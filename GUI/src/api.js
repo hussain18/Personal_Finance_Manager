@@ -91,7 +91,7 @@ async function POST(opts){
     const URL = opts.url
     const header = opts.headers ? opts.headers : HEADERS
     const body = opts.body
-    const res = await axios.post(URL, body) 
+    const res = await axios.post(URL, body, {headers: header}) 
     return res.data;
 
 }
@@ -101,7 +101,7 @@ async function PATCH(opts){
     const URL = opts.url
     const header = opts.headers ? opts.headers : HEADERS
     const body = opts.body
-    const res = await axios.patch(URL, body) 
+    const res = await axios.patch(URL, body, {headers: header}) 
     return res.data;
 
 }
