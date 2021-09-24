@@ -3,7 +3,7 @@ const incomes = require('./incomes');
 const total = require('../db/totals');
 const planReport = require('./plan');
 const user = require('../db/user');
-const dbLoans = require('../db/loan')
+const dbLoans = require('../db/loan');
 
 const MONTH_NAMES = [
   'January',
@@ -83,48 +83,53 @@ const profileReport = async (username) => {
 
   const thisMonthInReport = await incomes.thisMonthReport(username);
   const thisMonthExReport = await expenses.thisMonthReport(username);
-  const todayExpenses = await expenses.todayReport(username)
+  const todayExpenses = await expenses.todayReport(username);
   const totals = await total.getTotal(username);
-  const plan = await planReport(username)
   const dbUser = await user.getUser(username);
 
-  const totalSaving = totals.totalInHand
+  const totalSaving = totals.totalInHand;
 
-  const thisMonthIncome = thisMonthInReport.total
-  const thisMonthExpense = thisMonthExReport.total
-  const currentMonth = new Date().getMonth()
+  const thisMonthIncome = thisMonthInReport.total;
+  const thisMonthExpense = thisMonthExReport.total;
+  const currentMonth = new Date().getMonth();
 
-  const toSpendEveryday = Math.floor(thisMonthIncome/MONTH_DAYS[currentMonth])
-  const toSaveEverDay = plan.dailySavings
+  const toSpendEveryday = Math.floor(
+    thisMonthIncome / MONTH_DAYS[currentMonth]
+  );
 
   // Getting status & amount of money to spend today
-  report.canSaveMoney = toSpendEveryday > toSaveEverDay 
-  report.incomeSurvived = toSpendEveryday >= (thisMonthIncome - thisMonthExpense) 
-  const fromSavings = (thisMonthIncome - thisMonthExpense) <= 10 
-  report.fromSavings = fromSavings
-  const noMoney = (fromSavings && (totalSaving <= toSpendEveryday))
-  report.noMoney = noMoney
-  report.toSpendToday = noMoney ? totalSaving : toSpendEveryday
-  report.availableAmount = totalSaving
-  report.todayExpenses = todayExpenses.amount;
-
+  report.incomeSurvived = toSpendEveryday >= thisMonthIncome - thisMonthExpense;
+  const fromSavings = thisMonthIncome - thisMonthExpense <= 10;
+  report.fromSavings = fromSavings;
+  const noMoney = fromSavings && totalSaving <= toSpendEveryday;
+  report.noMoney = noMoney;
+  report.toSpendToday = noMoney ? totalSaving : toSpendEveryday;
+  report.availableAmount = totalSaving;
+  report.todayExpenses = todayExpenses.amount || 0;
+  
   // User Related Report
-  report.isIncomeRegular = dbUser.isIncomeRegular
-  report.hasPlan = dbUser.plan
-  report.incomeReceived = dbUser.incomeReceived
-  report.incomeAmount = dbUser.incomeAmount
-  report.userCompleteName = dbUser.completeName
+  report.isIncomeRegular = dbUser.isIncomeRegular;
+  report.hasPlan = dbUser.plan;
+  report.incomeReceived = dbUser.incomeReceived;
+  report.incomeAmount = dbUser.incomeAmount;
+  report.userCompleteName = dbUser.completeName;
   
   // Plan Related Report
-  report.planTotal = plan.total
-  report.planDuration = plan.duration
-  report.targetSave = plan.dailySavings
+  if (!dbUser.plan) return report;
+  
+  const plan = await planReport(username);
+  const toSaveEverDay = plan.dailySavings;
 
-  return report
+  report.canSaveMoney = toSpendEveryday > toSaveEverDay;
+  report.planTotal = plan.total;
+  report.planDuration = plan.duration;
+  report.targetSave = plan.dailySavings;
+
+  return report;
 };
 
 const debtReport = async (username) => {
-  return dbLoans.getLoans(username)
+  return dbLoans.getLoans(username);
 };
 
 module.exports = {
